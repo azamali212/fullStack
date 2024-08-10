@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\PermissionRegistrar;
 use Spatie\Permission\Models\Permission;
@@ -10,67 +9,82 @@ use Spatie\Permission\Models\Role;
 
 class RolePermissionSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run(): void
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        //Create Roles 
-        $superAdminRole = Role::create(['name'=>'super-admin']);
-        $hospitalAdminRole = Role::create(['name' => 'hospital-admin']);
-        $dcotorAdminRole = Role::create(['name' => 'dcotor-admin']);
-        $pharmacyAdminRole = Role::create(['name' => 'pharmacy-admin']);
-        $patientRole = Role::create(['name' => 'patient']);
-        $peopleRole = Role::create(['name' => 'people']);
+        // Create Permissions with specific guards
+        $permissions = [
+            // Hospital Admin Permissions
+            ['name' => 'create hospitals', 'guard_name' => 'hospital-admin-api'],
+            ['name' => 'view hospitals', 'guard_name' => 'hospital-admin-api'],
+            ['name' => 'edit hospitals', 'guard_name' => 'hospital-admin-api'],
+            ['name' => 'delete hospitals', 'guard_name' => 'hospital-admin-api'],
+            ['name' => 'create doctors', 'guard_name' => 'hospital-admin-api'],
+            ['name' => 'view doctors', 'guard_name' => 'hospital-admin-api'],
+            ['name' => 'edit doctors', 'guard_name' => 'hospital-admin-api'],
+            ['name' => 'delete doctors', 'guard_name' => 'hospital-admin-api'],
+            ['name' => 'create pharmacies', 'guard_name' => 'hospital-admin-api'],
+            ['name' => 'view pharmacies', 'guard_name' => 'hospital-admin-api'],
+            ['name' => 'edit pharmacies', 'guard_name' => 'hospital-admin-api'],
+            ['name' => 'delete pharmacies', 'guard_name' => 'hospital-admin-api'],
 
-        //Create Permissions for hospital 
-        Permission::create(['name' => 'create hospitals']);
-        Permission::create(['name' => 'view hospitals']);
-        Permission::create(['name' => 'edit hospitals']);
-        Permission::create(['name' => 'delete hospitals']);
+            // Doctor Admin Permissions
+            ['name' => 'create doctors', 'guard_name' => 'doctor-admin-api'],
+            ['name' => 'view doctors', 'guard_name' => 'doctor-admin-api'],
+            ['name' => 'edit doctors', 'guard_name' => 'doctor-admin-api'],
+            ['name' => 'delete doctors', 'guard_name' => 'doctor-admin-api'],
+            ['name' => 'create pharmacies', 'guard_name' => 'doctor-admin-api'],
+            ['name' => 'view pharmacies', 'guard_name' => 'doctor-admin-api'],
+            ['name' => 'edit pharmacies', 'guard_name' => 'doctor-admin-api'],
+            ['name' => 'view patients', 'guard_name' => 'doctor-admin-api'],
+            ['name' => 'delete patients', 'guard_name' => 'doctor-admin-api'],
 
-        //Create Permissions for Dcotor
-        Permission::create(['name' => 'create dcotors']);
-        Permission::create(['name' => 'view dcotors']);
-        Permission::create(['name' => 'edit dcotors']);
-        Permission::create(['name' => 'delete dcotors']);
+            // Pharmacy Admin Permissions
+            ['name' => 'view hospitals', 'guard_name' => 'pharmacy-admin-api'],
+            ['name' => 'view pharmacies', 'guard_name' => 'pharmacy-admin-api'],
+            ['name' => 'edit pharmacies', 'guard_name' => 'pharmacy-admin-api'],
+            ['name' => 'view doctors', 'guard_name' => 'pharmacy-admin-api'],
+            ['name' => 'view patients', 'guard_name' => 'pharmacy-admin-api'],
+            ['name' => 'delete patients', 'guard_name' => 'pharmacy-admin-api'],
 
-        // Create permissions for patients
-        Permission::create(['name' => 'create patients']);
-        Permission::create(['name' => 'view patients']);
-        Permission::create(['name' => 'edit patients']);
-        Permission::create(['name' => 'delete patients']);
+            // Patient Permissions
+            ['name' => 'view hospitals', 'guard_name' => 'patient-api'],
+            ['name' => 'view pharmacies', 'guard_name' => 'patient-api'],
+            ['name' => 'view doctors', 'guard_name' => 'patient-api'],
+            ['name' => 'create patients', 'guard_name' => 'patient-api'],
+            ['name' => 'view patients', 'guard_name' => 'patient-api'],
+            ['name' => 'edit patients', 'guard_name' => 'patient-api'],
+            ['name' => 'delete patients', 'guard_name' => 'patient-api'],
 
-        // Create permissions for pharmacies
-        Permission::create(['name' => 'create pharmacies']);
-        Permission::create(['name' => 'view pharmacies']);
-        Permission::create(['name' => 'edit pharmacies']);
-        Permission::create(['name' => 'delete pharmacies']);
+            // People Permissions
+            ['name' => 'view hospitals', 'guard_name' => 'people-api'],
+            ['name' => 'view doctors', 'guard_name' => 'people-api'],
+            ['name' => 'view pharmacies', 'guard_name' => 'people-api'],
+            ['name' => 'create peoples', 'guard_name' => 'people-api'],
+            ['name' => 'view peoples', 'guard_name' => 'people-api'],
+            ['name' => 'edit peoples', 'guard_name' => 'people-api'],
+            ['name' => 'delete peoples', 'guard_name' => 'people-api'],
+        ];
 
-        // Create permissions for patients
-        Permission::create(['name' => 'create patients']);
-        Permission::create(['name' => 'view patients']);
-        Permission::create(['name' => 'edit patients']);
-        Permission::create(['name' => 'delete patients']);
+        foreach ($permissions as $perm) {
+            Permission::firstOrCreate(['name' => $perm['name'], 'guard_name' => $perm['guard_name']]);
+        }
 
-        // Create permissions for peoples
-        Permission::create(['name' => 'create peoples']);
-        Permission::create(['name' => 'view peoples']);
-        Permission::create(['name' => 'edit peoples']);
-        Permission::create(['name' => 'delete peoples']);
+        // Create Roles
+        $superAdminRole = Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'super-admin-api']);
+        $hospitalAdminRole = Role::firstOrCreate(['name' => 'hospital-admin', 'guard_name' => 'hospital-admin-api']);
+        $doctorAdminRole = Role::firstOrCreate(['name' => 'doctor-admin', 'guard_name' => 'doctor-admin-api']);
+        $pharmacyAdminRole = Role::firstOrCreate(['name' => 'pharmacy-admin', 'guard_name' => 'pharmacy-admin-api']);
+        $patientRole = Role::firstOrCreate(['name' => 'patient', 'guard_name' => 'patient-api']);
+        $peopleRole = Role::firstOrCreate(['name' => 'people', 'guard_name' => 'people-api']);
 
-        //Assgin permissions to Super Admin
-        $superAdminRole->givePermissionTo(Permission::all());
+        // Assign Permissions to Roles
+        $superAdminRole->givePermissionTo(Permission::where('guard_name', 'super-admin-api')->get());
 
-        //Assgin permissions to hospital 
         $hospitalAdminRole->givePermissionTo([
             'view hospitals',
             'edit hospitals',
-            'delete hospitals',
             'create doctors',
             'view doctors',
             'edit doctors',
@@ -79,45 +93,44 @@ class RolePermissionSeeder extends Seeder
             'view pharmacies',
             'edit pharmacies',
             'delete pharmacies',
-            'create patients',
+        ]);
+
+        $doctorAdminRole->givePermissionTo([
+            'view doctors',
+            'edit doctors',
+            'delete doctors',
+            'view pharmacies',
             'view patients',
-            'edit patients',
             'delete patients',
         ]);
 
-         //Assgin permissions to Dcotor 
-         $dcotorAdminRole->givePermissionTo([
-            'view dcotors',
-            'edit dcotors',
+        $pharmacyAdminRole->givePermissionTo([
+            'view hospitals',
             'view pharmacies',
             'edit pharmacies',
-            'create patients',
+            'view doctors',
             'view patients',
-            'edit patients',
             'delete patients',
         ]);
 
-        //Assgin permissions to patients
         $patientRole->givePermissionTo([
             'view hospitals',
             'view pharmacies',
-            'view dcotors',
+            'view doctors',
             'create patients',
             'view patients',
             'edit patients',
             'delete patients',
         ]);
 
-        //Assgin permissions to People
         $peopleRole->givePermissionTo([
             'view hospitals',
-            'view dcotors',
+            'view doctors',
             'view pharmacies',
             'create peoples',
             'view peoples',
             'edit peoples',
             'delete peoples',
         ]);
-
     }
 }

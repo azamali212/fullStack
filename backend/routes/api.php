@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\SuperAdminLoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('login', [SuperAdminLoginController::class, 'login']);
+
+Route::middleware(['auth:sanctum'])->group(function(){
+    // Only accessible by Super Admin
+    Route::middleware(['can:super-admin-access'])->group(function () {
+        Route::get('/super-admin/dashboard', function () {
+            return response()->json(['message' => 'Welcome, Super Admin!']);
+        });
+    });
 });
