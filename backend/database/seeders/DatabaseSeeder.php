@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         // Call the RolePermissionSeeder
         $this->call(RolePermissionSeeder::class);
         $this->call(SuperAdminSeeder::class);
+        $this->call(HospitalSeeder::class);
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',

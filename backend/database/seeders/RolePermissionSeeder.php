@@ -80,7 +80,7 @@ class RolePermissionSeeder extends Seeder
         $peopleRole = Role::firstOrCreate(['name' => 'people', 'guard_name' => 'people-api']);
 
         // Assign Permissions to Roles
-        $superAdminRole->givePermissionTo(Permission::where('guard_name', 'super-admin-api')->get());
+        $superAdminRole->givePermissionTo(Permission::where('guard_name', 'super-admin-api')->get()->all());
 
         $hospitalAdminRole->givePermissionTo([
             'view hospitals',
