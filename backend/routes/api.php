@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\SuperAdminLoginController;
+use App\Http\Controllers\Doctor\DoctorController;
 use App\Http\Controllers\Hospital\HospitalController;
 use App\Models\Hospital;
 use Illuminate\Http\Request;
@@ -26,10 +27,23 @@ Route::middleware(['auth:sanctum'])->group(function(){
             return response()->json(['message' => 'Welcome, Super Admin!']);
         });
         Route::post('/super-admin/logout', [SuperAdminLoginController::class, 'logout']);
-        Route::get('index',[HospitalController::class,'index'])->name('index');
-        Route::post('store',[HospitalController::class,'store'])->name('store');
-        Route::get('show/{id}',[HospitalController::class,'show'])->name('show');
-        Route::put('update/{id}',[HospitalController::class,'update'])->name('update');
-        Route::delete('destroy/{id}',[HospitalController::class,'destroy'])->name('destroy');
+
+         // Hospital Routes
+        Route::prefix('hospitals')->group(function() {
+            Route::get('index', [HospitalController::class, 'index'])->name('hospitals.index');
+            Route::post('store', [HospitalController::class, 'store'])->name('hospitals.store');
+            Route::get('show/{id}', [HospitalController::class, 'show'])->name('hospitals.show');
+            Route::put('update/{id}', [HospitalController::class, 'update'])->name('hospitals.update');
+            Route::delete('destroy/{id}', [HospitalController::class, 'destroy'])->name('hospitals.destroy');
+        });
+        
+        // Doctor Routes
+        Route::prefix('doctors')->group(function() {
+            Route::get('index', [DoctorController::class, 'index'])->name('doctors.index');
+            Route::post('store', [DoctorController::class, 'store'])->name('doctors.store');
+            Route::get('show/{id}', [DoctorController::class, 'show'])->name('doctors.show');
+            Route::put('update/{id}', [DoctorController::class, 'update'])->name('doctors.update');
+            Route::delete('destroy/{id}', [DoctorController::class, 'destroy'])->name('doctors.destroy');
+        });
     });
 }); 
