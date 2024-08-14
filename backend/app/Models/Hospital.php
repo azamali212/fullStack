@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Hospital extends Authenticatable
 {
@@ -19,11 +20,48 @@ class Hospital extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+       'name',
         'email',
         'password',
+        'phone_number',
+        'registration_number',
+        'established_date',
+        'address_line1',
+        'address_line2',
+        'city',
+        'state',
+        'postal_code',
+        'country',
+        'bed_count',
+        'specialties',
+        'emergency_services',
+        'ambulance_service',
+        'operation_theaters',
+        'emergency_contact_number',
+        'fax_number',
+        'website_url',
+        'contact_person_name',
+        'contact_person_email',
+        'contact_person_phone',
+        'accreditations',
+        'affiliated_universities',
+        'insurance_partners',
+        'departments',
+        'visiting_hours',
+        'profile_picture',
+        'consultation_fee_range',
+        // Images
+        'registration_certificate_image',
+        'license_image',
+        'fax_id_image',
+        'other_documents_image',
     ];
 
+     // One hospital has many doctors
+     public function dcotors(): HasMany
+    {
+        return $this->hasMany(Dcotor::class);
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

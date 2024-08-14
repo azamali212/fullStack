@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -20,9 +21,17 @@ class Dcotor extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'hospital_id',
         'email',
         'password',
     ];
+
+     // Many doctors belong to one hospital
+    // Define the 'hospital' relationship
+    public function hospital(): BelongsTo
+    {
+        return $this->belongsTo(Hospital::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.
