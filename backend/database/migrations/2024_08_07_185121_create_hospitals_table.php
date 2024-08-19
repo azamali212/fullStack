@@ -42,7 +42,7 @@ return new class extends Migration
             $table->text('accreditations')->nullable();
             $table->text('affiliated_universities')->nullable();
             $table->text('insurance_partners')->nullable();
-            $table->json('departments')->nullable();
+            $table->string('departments')->nullable();
             $table->string('visiting_hours')->nullable();
             $table->string('profile_picture')->nullable();
             $table->string('consultation_fee_range')->nullable();

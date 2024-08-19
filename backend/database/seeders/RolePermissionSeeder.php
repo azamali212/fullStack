@@ -85,7 +85,6 @@ class RolePermissionSeeder extends Seeder
         $hospitalAdminRole->givePermissionTo([
             'view hospitals',
             'edit hospitals',
-            'create doctors',
             'view doctors',
             'edit doctors',
             'delete doctors',

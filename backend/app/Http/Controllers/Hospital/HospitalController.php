@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Hospital;
 
 use App\Http\Controllers\BaseController\BaseCrudController;
+use App\Http\Requests\HospitalRequest;
 use App\Models\Hospital;
 use Illuminate\Http\Request;
 
@@ -12,12 +13,9 @@ class HospitalController extends BaseCrudController
         $this->model = Hospital::class;
     }
 
-    protected function validationRules() {
-        return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:hospitals,email|max:255',
-            'password' => 'required|string|min:8',
-        ];
+    protected function validationRules()
+    {
+        return (new HospitalRequest())->rules();
     }
 
     public function show($id) {
@@ -64,4 +62,6 @@ class HospitalController extends BaseCrudController
 
         return $this->successResponse($responseData, 'Hospital and related data retrieved successfully');
     }
+
+    
 }
