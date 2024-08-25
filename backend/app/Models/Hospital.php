@@ -50,6 +50,8 @@ class Hospital extends Authenticatable
         'visiting_hours',
         'profile_picture',
         'consultation_fee_range',
+        'verification_code', 
+        'is_verified',
         // Images
         'registration_certificate_image',
         'license_image',

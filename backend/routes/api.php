@@ -35,6 +35,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
             Route::put('update/{id}', [HospitalController::class, 'update'])->name('hospitals.update');
             Route::delete('destroy/{id}', [HospitalController::class, 'destroy'])->name('hospitals.destroy');
             Route::get('/hospitals/{id}', [HospitalController::class, 'show']);
+            Route::post('/hospitals/verify-email', [HospitalController::class, 'verifyEmail']);
         });
 
         // Doctor Routes
