@@ -64,6 +64,11 @@ class Hospital extends Authenticatable
     {
         return $this->hasMany(Dcotor::class);
     }
+
+    public function ambulances()
+    {
+        return $this->hasMany(AmbulanceService::class);
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

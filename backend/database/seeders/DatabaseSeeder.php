@@ -22,6 +22,11 @@ class DatabaseSeeder extends Seeder
         $this->call(SuperAdminSeeder::class);
         $this->call(HospitalSeeder::class);
         $this->call(DoctorSeeder::class);
+        $this->call(AmbulanceServiceSeeder::class);
+        $this->call(AmbulanceDriverSeeder::class);
+        $this->call(MaintenanceRecordSeeder::class);
+        $this->call(EmergencyCallSeeder::class);
+        $this->call(ShiftScheduleSeeder::class);
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
