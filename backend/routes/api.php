@@ -4,8 +4,6 @@ use App\Http\Controllers\Auth\SuperAdminLoginController;
 use App\Http\Controllers\Doctor\DoctorController;
 use App\Http\Controllers\Hospital\HospitalController;
 use App\Http\Controllers\SuperAdmin\SuperAdminController;
-use App\Models\Hospital;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*

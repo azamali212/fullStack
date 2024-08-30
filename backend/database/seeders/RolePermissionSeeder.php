@@ -57,6 +57,14 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'edit patients', 'guard_name' => 'patient-api'],
             ['name' => 'delete patients', 'guard_name' => 'patient-api'],
 
+            // Ambulance Driver Permissions
+            ['name' => 'view hospitals', 'guard_name' => 'ambulance_driver-api'],
+            ['name' => 'view pharmacies', 'guard_name' => 'ambulance_driver-api'],
+            ['name' => 'view doctors', 'guard_name' => 'ambulance_driver-api'],
+            ['name' => 'view ambulance drivers', 'guard_name' => 'ambulance_driver-api'],
+            ['name' => 'edit ambulance drivers', 'guard_name' => 'ambulance_driver-api'],
+            ['name' => 'delete ambulance drivers', 'guard_name' => 'ambulance_driver-api'],
+
             // People Permissions
             ['name' => 'view hospitals', 'guard_name' => 'people-api'],
             ['name' => 'view doctors', 'guard_name' => 'people-api'],
@@ -78,6 +86,7 @@ class RolePermissionSeeder extends Seeder
         $pharmacyAdminRole = Role::firstOrCreate(['name' => 'pharmacy-admin', 'guard_name' => 'pharmacy-admin-api']);
         $patientRole = Role::firstOrCreate(['name' => 'patient', 'guard_name' => 'patient-api']);
         $peopleRole = Role::firstOrCreate(['name' => 'people', 'guard_name' => 'people-api']);
+        $ambulanceDriverRole = Role::firstOrCreate(['name' => 'ambulance-driver', 'guard_name' => 'ambulance_driver-api']);
 
         // Assign Permissions to Roles
         $superAdminRole->givePermissionTo(Permission::where('guard_name', 'super-admin-api')->get()->all());
@@ -120,6 +129,15 @@ class RolePermissionSeeder extends Seeder
             'view patients',
             'edit patients',
             'delete patients',
+        ]);
+
+        $ambulanceDriverRole->givePermissionTo([
+            'view hospitals',
+            'view pharmacies',
+            'view doctors',
+            'view ambulance drivers',
+            'edit ambulance drivers',
+            'delete ambulance drivers',
         ]);
 
         $peopleRole->givePermissionTo([

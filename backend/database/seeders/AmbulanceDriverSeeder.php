@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\AmbulanceDriver;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class AmbulanceDriverSeeder extends Seeder
 {
@@ -18,6 +19,7 @@ class AmbulanceDriverSeeder extends Seeder
         AmbulanceDriver::create([
             'name' => 'John Doe',
             'email' => 'john.doe@example.com',
+            'password' => Hash::make('doctor123'),
             'age' => 35,
             'degree' => 'Paramedic Certification',
             'license_number' => 'D123456789',
@@ -31,6 +33,7 @@ class AmbulanceDriverSeeder extends Seeder
         AmbulanceDriver::create([
             'name' => 'Jane Smith',
             'email' => 'jane.smith@example.com',
+            'password' => Hash::make('doctor123'),
             'age' => 40,
             'degree' => 'Advanced Life Support Certification',
             'license_number' => 'D987654321',
@@ -44,6 +47,7 @@ class AmbulanceDriverSeeder extends Seeder
         AmbulanceDriver::create([
             'name' => 'Mike Johnson',
             'email' => 'mike.johnson@example.com',
+            'password' => Hash::make('doctor123'),
             'age' => 45,
             'degree' => 'First Aid Certification',
             'license_number' => 'D111222333',

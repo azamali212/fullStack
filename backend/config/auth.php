@@ -62,10 +62,15 @@ return [
             'driver' => 'session',
             'provider' => 'patients',
         ],
+        'ambulance_driver' => [
+            'driver' => 'session',
+            'provider' => 'ambulance_drivers',
+        ],
         'people' => [
             'driver' => 'session',
             'provider' => 'peoples',
         ],
+        
         //Api Guards Define
         'api' => [
             'driver' => 'sanctum',
@@ -92,6 +97,10 @@ return [
         'patient-api' => [
             'driver' => 'sanctum',
             'provider' => 'patients',
+        ],
+        'ambulance_driver-api' => [
+            'driver' => 'sanctum',
+            'provider' => 'ambulance_drivers',
         ],
         'people-api' => [
             'driver' => 'sanctum',
@@ -142,6 +151,11 @@ return [
             'model' => App\Models\Patient::class,
         ],
         
+        'ambulance_drivers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\AmbulanceDriver::class,
+        ],
+
         'peoples' => [
             'driver' => 'eloquent',
             'model' => App\Models\People::class,
