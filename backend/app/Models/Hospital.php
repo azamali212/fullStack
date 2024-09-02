@@ -23,6 +23,7 @@ class Hospital extends Authenticatable
        'name',
         'email',
         'password',
+        'role',
         'phone_number',
         'registration_number',
         'established_date',
