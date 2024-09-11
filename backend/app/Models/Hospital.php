@@ -7,12 +7,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class Hospital extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable;
+    use \Spatie\Permission\Traits\HasRoles;
+
+    protected $guard =  'hospital';
 
     /**
      * The attributes that are mass assignable.
@@ -70,7 +74,28 @@ class Hospital extends Authenticatable
     {
         return $this->hasMany(AmbulanceService::class);
     }
+
+     // A hospital belongs to a super admin (user)
+     public function user()
+     {
+         return $this->belongsTo(User::class);
+     }
+
+
+    // Relationships for permissions
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id')
+                    ->where('model_type', self::class);
+    }
+
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, 'model_has_permissions', 'model_id', 'permission_id')
+                    ->where('model_type', self::class);
+    }
     /**
+     * 
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>

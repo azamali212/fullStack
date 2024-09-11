@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
+        'guard' => 'api',
         'passwords' => 'users',
     ],
 
@@ -41,71 +41,19 @@ return [
             'provider' => 'users',
         ],
 
-        'super-admin' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
-
-        'hospital-admin' => [
-            'driver' => 'session',
-            'provider' => 'hospitals',
-        ],
-        'doctor-admin' => [
-            'driver' => 'session',
-            'provider' => 'doctors',
-        ],
-        'pharmacy-admin' => [
-            'driver' => 'session',
-            'provider' => 'pharmacys',
-        ],
-        'patient' => [
-            'driver' => 'session',
-            'provider' => 'patients',
-        ],
-        'ambulance_driver' => [
-            'driver' => 'session',
-            'provider' => 'ambulance_drivers',
-        ],
-        'people' => [
-            'driver' => 'session',
-            'provider' => 'peoples',
-        ],
-        
-        //Api Guards Define
         'api' => [
             'driver' => 'sanctum',
             'provider' => 'users',
         ],
 
-        'super-admin-api' => [
-            'driver' => 'sanctum',
-            'provider' => 'users',
-        ],
-
-        'hospital-admin-api' => [
+        'hospital' => [
             'driver' => 'sanctum',
             'provider' => 'hospitals',
         ],
-        'doctor-admin-api' => [
-            'driver' => 'sanctum',
-            'provider' => 'doctors',
-        ],
-        'pharmacy-admin-api' => [
-            'driver' => 'sanctum',
-            'provider' => 'pharmacys',
-        ],
-        'patient-api' => [
-            'driver' => 'sanctum',
-            'provider' => 'patients',
-        ],
-        'ambulance_driver-api' => [
-            'driver' => 'sanctum',
-            'provider' => 'ambulance_drivers',
-        ],
-        'people-api' => [
-            'driver' => 'sanctum',
-            'provider' => 'peoples',
-        ],
+      
+
+       
+      
     ],
 
     /*
@@ -136,30 +84,9 @@ return [
             'model' => App\Models\Hospital::class,
         ],
 
-        'doctors' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Dcotor::class,
-        ],
+       
 
-        'pharmacys' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Pharmacy::class,
-        ],
-
-        'patients' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Patient::class,
-        ],
-        
-        'ambulance_drivers' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\AmbulanceDriver::class,
-        ],
-
-        'peoples' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\People::class,
-        ],
+       
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

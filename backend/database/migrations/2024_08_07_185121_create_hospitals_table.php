@@ -46,6 +46,7 @@ return new class extends Migration
             $table->string('visiting_hours')->nullable();
             $table->string('profile_picture')->nullable();
             $table->string('consultation_fee_range')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
             //Images
             $table->string('registration_certificate_image')->nullable();
             $table->string('license_image')->nullable();

@@ -3,43 +3,41 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class SuperAdminLoginController extends Controller
 {
     public function login(Request $request)
     {
-        // Validate the request
-        $credentials = $request->validate([
+        $request->validate([
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
-        // Attempt to authenticate using the 'web' guard to verify credentials
-        if (!Auth::attempt($credentials)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
+        $credentials = $request->only('email', 'password');
+    
+        // Retrieve the hospital by email
+        $user = User::where('email', $request->email)->first();
+        
+        if ($user && Hash::check($request->password, $user->password)) {
+            // Authentication passed
+            $token = $user->createToken('authToken')->plainTextToken;
+
+            return response()->json([
+                'success' => true,
+                'token' => $token
             ]);
         }
-
-        // Get the authenticated user
-        $superAdmin = Auth::user();
-
-        // Ensure the user has the 'super-admin' role
-        if (!$superAdmin->hasRole('super-admin')) {
-            Auth::logout();
-            throw ValidationException::withMessages([
-                'role' => ['You do not have permission to access this role.'],
-            ]);
-        }
-
-        // Generate Sanctum token
+    
+        // Authentication failed
         return response()->json([
-            'user' => $superAdmin,
-            'token' => $superAdmin->createToken('Super Admin API Token')->plainTextToken,
-        ]);
+            'success' => false,
+            'error' => 'Invalid credentials'
+        ], 401);
     }
 
     //Logout Super Admin

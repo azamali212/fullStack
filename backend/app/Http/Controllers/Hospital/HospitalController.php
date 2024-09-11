@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Log;
 use App\Notifications\HospitalNotification;
 use App\Services\SmsServices;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 
 class HospitalController extends BaseCrudController
 {
@@ -24,9 +27,17 @@ class HospitalController extends BaseCrudController
         return (new HospitalRequest())->rules();
     }
 
+    public function index(Request $request) {}
+
+
+
+
+
+
     //Overide Function of store hospital 
     public function store(Request $request)
     {
+        //auth()->user()->hasPermissionTo("view hospital");
         $validatedData = $request->validate($this->validationRules());
         // Generate the verification code
         $verificationCode = $this->generateVerificationCode();
@@ -65,9 +76,9 @@ class HospitalController extends BaseCrudController
             'hospital_id' => 'required|exists:hospitals,id',
             'verification_code' => 'required'
         ]);
-    
+
         $hospital = Hospital::find($request->hospital_id);
-    
+
         // Check if the provided verification code matches the stored code
         if ($hospital->verification_code === $request->verification_code) {
             // Update the hospital record to mark it as verified
@@ -76,14 +87,14 @@ class HospitalController extends BaseCrudController
                 'verification_code' => null
             ]);
 
-             // Send SMS notification
-             $this->smsServices->send(
+            // Send SMS notification
+            $this->smsServices->send(
                 $hospital->phone_number,
                 'Your email has been verified successfully. Welcome to our platform!'
             );
-    
+
             Log::info('Hospital ID ' . $hospital->id . ' verified successfully.');
-    
+
             // Send the welcome and confirmation emails
             try {
                 $hospital->notify(new HospitalNotification($hospital, 'welcome'));
@@ -91,17 +102,17 @@ class HospitalController extends BaseCrudController
             } catch (\Exception $e) {
                 Log::error('Failed to send welcome email to hospital ID ' . $hospital->id . ': ' . $e->getMessage());
             }
-    
+
             try {
                 $hospital->notify((new HospitalNotification($hospital, 'confirmation'))->delay(now()->addMinutes(500)));
                 Log::info('Confirmation email scheduled for hospital ID ' . $hospital->id);
             } catch (\Exception $e) {
                 Log::error('Failed to schedule confirmation email for hospital ID ' . $hospital->id . ': ' . $e->getMessage());
             }
-    
+
             return $this->successResponse(null, 'Email verified successfully, and welcome and confirmation emails have been sent.');
         }
-    
+
         return $this->errorResponse('Invalid verification code', 400);
     }
 

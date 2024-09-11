@@ -17,18 +17,21 @@ class SuperAdminSeeder extends Seeder
      */
     public function run()
     {
-        // Create or retrieve the super-admin role
-        $role = Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'super-admin-api']);
-
-        // Create the super admin user
-        $user = User::firstOrCreate([
-            'email' => 'superadmin@example.com',
-        ], [
-            'name' => 'Super Admin',
-            'password' => Hash::make('password'), // Use the password you want
+        $master_admin = User::create([
+            'role_id' => '1',
+            'name' => 'master',
+            'email' => 'dpe.developer001@gmail.com',
+            'password' => bcrypt('admin'),
         ]);
 
-        // Assign the role to the user
-        $user->assignRole($role);
+        $admin = User::create([
+            'role_id' => '2',
+            'name' => 'hospital',
+            'email' => 'admin@laravel-adminlte.com',
+            'password' => bcrypt('admin'),
+        ]);
+
+        $master_admin->assignRole(1);
+        $admin->assignRole(2);
     }
 }

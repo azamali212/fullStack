@@ -26,7 +26,7 @@ class BaseCrudController extends Controller
         return [];
     }
     //Get all Data
-    public function index()
+    public function index(Request $request)
     {
         $data = $this->model::all();
         return $this->successResponse($data, 'Items retrieved successfully');
