@@ -3,19 +3,15 @@
 namespace App\Http\Controllers\RolePermission;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Role as SpatieRole;
-use Spatie\Permission\Models\Permission as SpatiePermission;
 
 class RoleController extends Controller
 {
     function __construct()
     {
-        $this->middleware('auth:sanctum');
+        $this->middleware('auth:api');
         $this->middleware('permission:roles.index', ['only' => ['index']]);
         $this->middleware('permission:roles.show', ['only' => ['show']]);
         $this->middleware('permission:roles.create', ['only' => ['store']]);
@@ -73,30 +69,69 @@ class RoleController extends Controller
     }
 
     public function store(Request $request)
-	{
-		$validator = Validator::make($request->all(), [
+    {
+        $request->validate([
             'name' => 'required|unique:roles,name',
-            'permissions' => 'array'
+            'permission' => 'required',
         ]);
+        // $role = SpatieRole::create(['name' => $request->input('name')]);
+        $role = Role::create(['name' => $request->input('name')]);
+        $role->syncPermissions($request->input('permission'));
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        $role = SpatieRole::create(['name' => $request->input('name')]);
-
-        if ($request->has('permissions')) {
-            $role->syncPermissions($request->input('permissions'));
-        }
+        // Load permissions with the role data
+        $role->load('permissions');
 
         return response()->json([
             'success' => true,
             'data' => $role
         ]);
-	}
+    }
+
+    public function show(Role $role)
+    {
+        // Load permissions associated with the role
+        $role->load('permissions');
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id' => $role->id,
+                'name' => $role->name,
+                'permissions' => $role->permissions->pluck('name'),
+                'deleted_at' => $role->deleted_at
+            ]
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|unique:roles,name,' . $id,
+            'permission' => 'required|array',
+        ]);
+
+        $role = Role::find($id);
+
+        if (!$role) {
+            return response()->json(['error' => 'Role not found.'], 404);
+        }
+
+        $role->name = $request->input('name');
+        $role->save();
+
+        $role->syncPermissions($request->input('permission'));
+
+        $role->load('permissions');
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id' => $role->id,
+                'name' => $role->name,
+                'permissions' => $role->permissions->pluck('name'),
+            ]
+        ]);
+    }
 
     public function destroy(Role $role)
     {

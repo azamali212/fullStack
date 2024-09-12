@@ -29,10 +29,11 @@ Route::post('hospital-admin/login', [HospitalAdminAuthController::class, 'login'
 // Doctor Admin Authentication Routes
 //Route::post('doctor-admin/login',[DoctorAdminAuthController::class,'login'])->name('doctor-admin.login');
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:api')->group(function () {
     Route::get('role', [RoleController::class, 'index'])->middleware('permission:roles.index');
     Route::delete('roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
-   // Route::get('role/create', [RoleController::class, 'create'])->middleware('permission:roles.create');
+    Route::get('roles/{role}', [RoleController::class, 'show'])->name('roles.show')->middleware('permission:roles.show');
+    Route::put('roles/{role}', [RoleController::class, 'update'])->name('roles.update')->middleware('permission:roles.edit');
     Route::post('role/store', [RoleController::class, 'store'])->middleware('permission:roles.store');
 });
 
