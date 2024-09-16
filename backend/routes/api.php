@@ -8,6 +8,7 @@ use App\Http\Controllers\Hospital\HospitalController;
 use App\Http\Controllers\RolePermission\PermissionController;
 use App\Http\Controllers\RolePermission\RoleController;
 use App\Http\Controllers\SuperAdmin\SuperAdminController;
+use App\Http\Controllers\SuperAdmin\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,5 +41,9 @@ Route::middleware('auth:api')->group(function () {
     Route::post('permissions/store', [PermissionController::class, 'store'])->middleware('permission:permissions.create');
     Route::get('permissions/{permission}', [PermissionController::class, 'show'])->name('show')->middleware('permission:permissions.show');
     Route::put('permissions/{permission}', [PermissionController::class, 'update'])->middleware('permission:permissions.edit');
+    Route::get('user', [UserController::class, 'index'])->middleware('permission:users.index');
+    Route::post('user/store', [UserController::class, 'store'])->middleware('permission:users.store');
+    Route::get('user/{user}', [UserController::class, 'show'])->middleware('permission:users.show');
+    Route::put('user/{user}', [UserController::class, 'update'])->middleware('permission:users.edit');
 });
 

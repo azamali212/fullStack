@@ -18,14 +18,14 @@ class SuperAdminSeeder extends Seeder
     public function run()
     {
         $master_admin = User::create([
-            'role_id' => '1',
+           // 'role_id' => '1',
             'name' => 'master',
             'email' => 'dpe.developer001@gmail.com',
             'password' => bcrypt('admin'),
         ]);
 
         $admin = User::create([
-            'role_id' => '2',
+            //'role_id' => '2',
             'name' => 'hospital',
             'email' => 'admin@laravel-adminlte.com',
             'password' => bcrypt('admin'),
