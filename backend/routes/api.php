@@ -1,13 +1,10 @@
 <?php
 
-use App\Http\Controllers\Auth\DoctorAdminAuth\DoctorAdminAuthController;
 use App\Http\Controllers\Auth\HospitalAdminAuth\HospitalAdminAuthController;
 use App\Http\Controllers\Auth\SuperAdminLoginController;
-use App\Http\Controllers\Doctor\DoctorController;
 use App\Http\Controllers\Hospital\HospitalController;
 use App\Http\Controllers\RolePermission\PermissionController;
 use App\Http\Controllers\RolePermission\RoleController;
-use App\Http\Controllers\SuperAdmin\SuperAdminController;
 use App\Http\Controllers\SuperAdmin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -45,5 +42,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('user/store', [UserController::class, 'store'])->middleware('permission:users.store');
     Route::get('user/{user}', [UserController::class, 'show'])->middleware('permission:users.show');
     Route::put('user/{user}', [UserController::class, 'update'])->middleware('permission:users.edit');
+    Route::get('hospital', [HospitalController::class, 'index'])->middleware('permission:hospitals.index');
 });
 

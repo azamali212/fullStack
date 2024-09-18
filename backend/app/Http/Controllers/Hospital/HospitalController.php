@@ -2,169 +2,67 @@
 
 namespace App\Http\Controllers\Hospital;
 
-use App\Http\Controllers\BaseController\BaseCrudController;
-use App\Http\Requests\HospitalRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\HospitalResource;
 use App\Models\Hospital;
-use Illuminate\Support\Facades\Log;
-use App\Notifications\HospitalNotification;
-use App\Services\SmsServices;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Validator;
 
-class HospitalController extends BaseCrudController
+class HospitalController extends Controller
 {
-    protected $smsServices;
-    public function __construct(SmsServices $smsServices)
+    public function __construct()
     {
-        $this->model = Hospital::class;
-        $this->smsServices = $smsServices;
+        $this->middleware('auth:api');
+        $this->middleware('permission:hospitals.index', ['only' => ['index']]);
+        $this->middleware('permission:hospitals.create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:hospitals.show', ['only' => ['show']]);
+        $this->middleware('permission:hospitals.edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:hospitals.destroy', ['only' => ['destroy']]);
+        $this->middleware('permission:hospitals.profileSetting', ['only' => ['profileSetting']]);
     }
 
-    protected function validationRules()
+    public function index(Request $request)
     {
-        return (new HospitalRequest())->rules();
-    }
-
-    public function index(Request $request) {}
-
-
-
-
-
-
-    //Overide Function of store hospital 
-    public function store(Request $request)
-    {
-        //auth()->user()->hasPermissionTo("view hospital");
-        $validatedData = $request->validate($this->validationRules());
-        // Generate the verification code
-        $verificationCode = $this->generateVerificationCode();
-
-        Log::info('Validated Data Before Create: ', $validatedData);
-        Log::info('Verification Code Before Create: ' . $verificationCode);
-
-        // Create the hospital with the verification code
-        $hospital = $this->model::create(array_merge($validatedData, [
-            'verification_code' => $verificationCode,
-            'is_verified' => false
-        ]));
-
-        // Send SMS notification
-        $this->smsServices->send(
-            $hospital->phone_number,
-            'Your hospital registration was successful. Please check your email for further instructions.'
-        );
-
-
-
-        $hospital->notify((new HospitalNotification($hospital, 'welcome'))->delay(now()->addMinutes(500)));
-
-        // Queue a confirmation email after the welcome email
-        $hospital->notify((new HospitalNotification($hospital, 'confirmation'))->delay(now()->addMinutes(100)));
-
-        // Send verification email
-        $hospital->notify(new HospitalNotification($hospital, 'verification', $verificationCode));
-
-        return $this->successResponse($hospital, 'Hospital created and verification email sent. Please verify your email to complete the registration.', 201);
-    }
-
-    public function verifyEmail(Request $request)
-    {
-        $request->validate([
-            'hospital_id' => 'required|exists:hospitals,id',
-            'verification_code' => 'required'
+        $validator = Validator::make($request->all(), [
+            'sort_by' => 'in:name,created_at,bed_count', // fields you want to allow sorting on
+            'order' => 'in:asc,desc',
+            'search' => 'nullable|string|max:255',
         ]);
 
-        $hospital = Hospital::find($request->hospital_id);
-
-        // Check if the provided verification code matches the stored code
-        if ($hospital->verification_code === $request->verification_code) {
-            // Update the hospital record to mark it as verified
-            $hospital->update([
-                'is_verified' => true,
-                'verification_code' => null
-            ]);
-
-            // Send SMS notification
-            $this->smsServices->send(
-                $hospital->phone_number,
-                'Your email has been verified successfully. Welcome to our platform!'
-            );
-
-            Log::info('Hospital ID ' . $hospital->id . ' verified successfully.');
-
-            // Send the welcome and confirmation emails
-            try {
-                $hospital->notify(new HospitalNotification($hospital, 'welcome'));
-                Log::info('Welcome email sent to hospital ID ' . $hospital->id);
-            } catch (\Exception $e) {
-                Log::error('Failed to send welcome email to hospital ID ' . $hospital->id . ': ' . $e->getMessage());
-            }
-
-            try {
-                $hospital->notify((new HospitalNotification($hospital, 'confirmation'))->delay(now()->addMinutes(500)));
-                Log::info('Confirmation email scheduled for hospital ID ' . $hospital->id);
-            } catch (\Exception $e) {
-                Log::error('Failed to schedule confirmation email for hospital ID ' . $hospital->id . ': ' . $e->getMessage());
-            }
-
-            return $this->successResponse(null, 'Email verified successfully, and welcome and confirmation emails have been sent.');
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid parameters',
+                'errors' => $validator->errors()
+            ], 422);
         }
 
-        return $this->errorResponse('Invalid verification code', 400);
-    }
+        $query = Hospital::query();
 
-    private function generateVerificationCode()
-    {
-        // Generate a unique verification code
-        return str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-    }
 
-    public function show($id)
-    {
-        $hospital = $this->model::withCount('dcotors')->findOrFail($id);
+        //Condition Check if the search pass or not 
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            //anonymous function inside the where condition
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('city', 'like', "%{$search}%")
+                    ->orWhere('specialties', 'like', "%{$search}%");
+            });
+        }
 
-        // Format the response data
-        $responseData = [
-            'id' => $hospital->id,
-            'name' => $hospital->name,
-            'email' => $hospital->email,
-            'phone_number' => $hospital->phone_number,
-            'registration_number' => $hospital->registration_number,
-            'established_date' => $hospital->established_date,
-            'address' => [
-                'line1' => $hospital->address_line1,
-                'line2' => $hospital->address_line2,
-                'city' => $hospital->city,
-                'state' => $hospital->state,
-                'postal_code' => $hospital->postal_code,
-                'country' => $hospital->country,
-            ],
-            'bed_count' => $hospital->bed_count,
-            'specialties' => $hospital->specialties,
-            'emergency_services' => $hospital->emergency_services,
-            'ambulance_service' => $hospital->ambulance_service,
-            'operation_theaters' => $hospital->operation_theaters,
-            'emergency_contact_number' => $hospital->emergency_contact_number,
-            'fax_number' => $hospital->fax_number,
-            'website_url' => $hospital->website_url,
-            'contact_person' => [
-                'name' => $hospital->contact_person_name,
-                'email' => $hospital->contact_person_email,
-                'phone' => $hospital->contact_person_phone,
-            ],
-            'accreditations' => $hospital->accreditations,
-            'affiliated_universities' => $hospital->affiliated_universities,
-            'insurance_partners' => $hospital->insurance_partners,
-            'departments' => json_decode($hospital->departments),
-            'visiting_hours' => $hospital->visiting_hours,
-            'profile_picture' => $hospital->profile_picture,
-            'consultation_fee_range' => $hospital->consultation_fee_range,
-            'total_doctors' => $hospital->dcotors_count, // Total number of doctors
-        ];
+        //Sorting
+        $sortBy = $request->input('sort_by', 'created_at'); // default sort by created_at
+        $order = $request->input('order', 'desc'); // default order desc
+        $query->orderBy($sortBy, $order);
 
-        return $this->successResponse($responseData, 'Hospital and related data retrieved successfully');
+
+        $hospitals = $query->paginate(10);
+
+        return HospitalResource::collection($hospitals)
+            ->additional([
+                'status' => 'success',
+                'message' => 'Hospitals retrieved successfully'
+            ]);
     }
 }

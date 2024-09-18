@@ -42,14 +42,13 @@ class RolePermissionSeeder extends Seeder
             'users.store',
             'users.edit',
             'users.destroy',
-            'create_posts',
-            'edit_posts',
-            'delete_posts',
-            'view_posts',
-            'manage_users',
-            'view_reports',
-            'approve_comments',
-            'delete_comments'
+            'hospitals.index',
+            'hospitals.show',
+            'hospitals.create',
+            'hospitals.store',
+            'hospitals.edit',
+            'hospitals.destroy',
+            'hospitals.profileSetting'
         ];
 
         foreach ($permissions as $permission) {
@@ -76,32 +75,20 @@ class RolePermissionSeeder extends Seeder
                 'users.store',
                 'users.edit',
                 'users.destroy',
-                'create_posts',
-                'edit_posts',
-                'delete_posts',
-                'view_posts',
-                'manage_users',
-                'view_reports',
-                'approve_comments',
-                'delete_comments'
+                'hospitals.index',
+                'hospitals.show',
+                'hospitals.create',
+                'hospitals.store',
+                'hospitals.edit',
+                'hospitals.destroy',
+                'hospitals.profileSetting'
             ],
-            'Administrator' => [
-                'create_posts',
-                'edit_posts',
-                'view_posts',
-                'manage_users',
-                'view_reports',
-                'approve_comments'
+            'Hospital Administrator' => [
+                'hospitals.index',
+                'hospitals.profileSetting',
             ],
-            'Editor' => [
-                'create_posts',
-                'edit_posts',
-                'view_posts',
-                'approve_comments'
-            ],
-            'User' => [
-                'view_posts'
-            ]
+            'Editor' => [],
+            'User' => []
         ];
 
         foreach ($roles as $roleName => $permissions) {
