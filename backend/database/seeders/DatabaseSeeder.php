@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MaintenanceRecordSeeder::class);
         $this->call(EmergencyCallSeeder::class);
         $this->call(ShiftScheduleSeeder::class);
+        $this->call(HospitalProfileSeeder::class);
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',

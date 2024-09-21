@@ -6,20 +6,16 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\DB;
 
 class HospitalNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    //Define Variables
     protected $hospital;
     protected $type;
     protected $verificationCode;
-    /**
-     * Create a new notification instance.
-     *
-     * @return void
-     */
+
     public function __construct($hospital, $type, $verificationCode = null)
     {
         $this->hospital = $hospital;
@@ -27,23 +23,25 @@ class HospitalNotification extends Notification implements ShouldQueue
         $this->verificationCode = $verificationCode;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
+    public function failed(\Exception $exception)
+    {
+        DB::table('hospital_notifications')
+            ->where('hospital_id', $this->hospital->id)
+            ->update(['status' => 'failed']);
+    }
+
+    public function markAsCompleted()
+    {
+        DB::table('hospital_notifications')
+            ->where('hospital_id', $this->hospital->id)
+            ->update(['status' => 'completed']);
+    }
+
     public function via($notifiable)
     {
         return ['mail'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
-     */
     public function toMail($notifiable)
     {
         switch ($this->type) {
@@ -53,6 +51,8 @@ class HospitalNotification extends Notification implements ShouldQueue
                 return $this->verificationEmail();
             case 'confirmation':
                 return $this->confirmationEmail();
+            case 'update':
+                return $this->updateEmail();
             default:
                 return $this->defaultEmail();
         }
@@ -67,14 +67,13 @@ class HospitalNotification extends Notification implements ShouldQueue
             ->line('Thank you for choosing our platform.');
     }
 
-    // Method to handle the Verification Email
     protected function verificationEmail()
     {
         return (new MailMessage)
-            ->subject('Verify Your Email')
-            ->greeting('Hello, ' . $this->hospital->name)
+            ->subject('Email Verification')
             ->line('Your verification code is: ' . $this->verificationCode)
-            ->action('Verify Your Email', url('/verify?code=' . $this->verificationCode));
+            ->action('Verify Email', url('/verify-email?code=' . $this->verificationCode))
+            ->line('Thank you for using our application!');
     }
 
     protected function confirmationEmail()
@@ -86,7 +85,16 @@ class HospitalNotification extends Notification implements ShouldQueue
             ->line('We are excited to have you on board.');
     }
 
-    // Default Email Fallback
+    protected function updateEmail()
+    {
+        return (new MailMessage)
+            ->subject('Your Hospital Information Has Been Updated')
+            ->greeting('Hello, ' . $this->hospital->name)
+            ->line('Your hospital information has been successfully updated.')
+            ->line('Thank you for keeping your details up to date.')
+            ->line('If you did not make this change, please contact support.');
+    }
+
     protected function defaultEmail()
     {
         return (new MailMessage)
@@ -94,12 +102,6 @@ class HospitalNotification extends Notification implements ShouldQueue
             ->line('This is a default notification.');
     }
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
     public function toArray($notifiable)
     {
         return [

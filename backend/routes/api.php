@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\HospitalAdminAuth\HospitalAdminAuthController;
 use App\Http\Controllers\Auth\SuperAdminLoginController;
 use App\Http\Controllers\Hospital\HospitalController;
+use App\Http\Controllers\Hospital\HospitalProfileController;
 use App\Http\Controllers\RolePermission\PermissionController;
 use App\Http\Controllers\RolePermission\RoleController;
 use App\Http\Controllers\SuperAdmin\UserController;
@@ -43,5 +44,11 @@ Route::middleware('auth:api')->group(function () {
     Route::get('user/{user}', [UserController::class, 'show'])->middleware('permission:users.show');
     Route::put('user/{user}', [UserController::class, 'update'])->middleware('permission:users.edit');
     Route::get('hospital', [HospitalController::class, 'index'])->middleware('permission:hospitals.index');
+    Route::post('hospital/store', [HospitalController::class, 'store'])->middleware('permission:hospitals.create');
+    Route::post('hospital/verify-code', [HospitalController::class, 'verifyCode']);
+    Route::post('hospital/verify-email', [HospitalController::class, 'sendVerificationEmail']);
+    Route::put('hospital/{id}', [HospitalController::class, 'update'])->name('hospital.update')->middleware('permission:hospitals.edit');
+    Route::get('/hospitals/chart', [HospitalController::class, 'getHospitalChartData']);
+    Route::put('/hospitals/{id}/profile', [HospitalProfileController::class, 'update'])->middleware('permission:hospitals.profileSetting');
 });
 

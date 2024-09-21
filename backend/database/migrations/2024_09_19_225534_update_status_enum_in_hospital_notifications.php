@@ -13,9 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('hospitals', function (Blueprint $table) {
-            $table->string('verification_code')->nullable();
-            $table->boolean('is_verified')->default(false);
+        Schema::table('hospital_notifications', function (Blueprint $table) {
+            //
         });
     }
 
@@ -26,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('hospitals');
+        Schema::table('hospital_notifications', function (Blueprint $table) {
+            //
+        });
     }
 };

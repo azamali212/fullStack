@@ -81,7 +81,7 @@ class RolePermissionSeeder extends Seeder
                 'hospitals.store',
                 'hospitals.edit',
                 'hospitals.destroy',
-                'hospitals.profileSetting'
+                //'hospitals.profileSetting'
             ],
             'Hospital Administrator' => [
                 'hospitals.index',

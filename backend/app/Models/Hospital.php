@@ -70,6 +70,12 @@ class Hospital extends Authenticatable
         return $this->hasMany(Dcotor::class);
     }
 
+    //Profile 
+    public function profile()
+    {
+        return $this->hasOne(HospitalProfile::class);
+    }
+
     public function ambulances()
     {
         return $this->hasMany(AmbulanceService::class);

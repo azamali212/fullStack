@@ -15,16 +15,16 @@ return new class extends Migration
     {
         Schema::create('ambulance_services', function (Blueprint $table) {
             $table->id();
-            $table->string('license_plate')->unique();      // License plate number of the ambulance
-            $table->string('status');                       // Status of the ambulance (e.g., available, on duty, maintenance)
-            $table->unsignedBigInteger('hospital_id')->nullable(); // Foreign key to the hospitals table
-            $table->string('type')->nullable();             // Type of the ambulance (e.g., basic, advanced, specialized)
-            $table->string('make')->nullable();             // Make of the ambulance vehicle (e.g., Ford, Mercedes)
-            $table->string('model')->nullable();            // Model of the ambulance vehicle
-            $table->year('year')->nullable();               // Year the ambulance was manufactured
-            $table->string('color')->nullable();            // Color of the ambulance
-            $table->text('features')->nullable();           // Features of the ambulance (e.g., life support equipment, oxygen cylinders)
-            $table->text('maintenance_record')->nullable(); // Maintenance records or notes
+            $table->string('license_plate')->unique();     
+            $table->string('status');                       
+            $table->unsignedBigInteger('hospital_id')->nullable(); 
+            $table->string('type')->nullable();             
+            $table->string('make')->nullable();             
+            $table->string('model')->nullable();           
+            $table->year('year')->nullable();              
+            $table->string('color')->nullable();            
+            $table->text('features')->nullable();           
+            $table->text('maintenance_record')->nullable(); 
             $table->timestamps();
         });
     }
