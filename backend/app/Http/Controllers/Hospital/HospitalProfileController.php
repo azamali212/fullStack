@@ -54,15 +54,45 @@ class HospitalProfileController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    //Add Some pusher notification reminder if i forget when hospital change profile and afetr notifiy it super admin///////
+    
     public function update(HospitalProfileRequest $request, $id)
     {
         $profile = HospitalProfile::where('hospital_id', $id)->first();
+        //dd($profile);
+
+        if (!$profile) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Hospital profile not found'
+            ], 404);
+        }
+
+
+        $hospital = Hospital::find($id);
+        //dd($hospital);
+
+        if (!$hospital) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Hospital not found'
+            ], 404);
+        }
         $profile->update($request->validated());
+
+        $hospital->update([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'phone_number' => $request->input('phone_number'),
+        ]);
 
         return response()->json([
             'status' => 'success',
-            'data' => $profile,
-            'message' => 'Hospital profile updated successfully'
+            'data' => [
+                'profile' => $profile,
+                'hospital' => $hospital,
+            ],
+            'message' => 'Hospital profile and hospital updated successfully'
         ], 200);
     }
 
