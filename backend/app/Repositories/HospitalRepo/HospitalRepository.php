@@ -54,7 +54,12 @@ class HospitalRepository implements HospitalRepositoryInterface
         );
 
         // Send the verification email with the code
-        Notification::send($hospital, new HospitalNotification($hospital, 'verification', $verificationCode));
+        // Check if the $hospital instance is set up correctly before sending
+        if ($hospital && $hospital->email) {
+            Notification::send($hospital, new HospitalNotification($hospital, 'verification', $verificationCode));
+        } else {
+            \Log::error('Hospital not found or email is missing.');
+        }
 
         return $hospital;
     }

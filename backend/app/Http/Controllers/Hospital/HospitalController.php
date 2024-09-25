@@ -35,14 +35,8 @@ class HospitalController extends Controller
 
     public function getHospitalChartData()
     {
-        // Get the count of hospitals grouped by date for the last 30 days
-        $counts = Hospital::select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as count'))
-            ->where('created_at', '>=', Carbon::today()->subDays(30)) // Change this to the desired number of days
-            ->groupBy('date')
-            ->orderBy('date', 'asc')
-            ->get();
+        $counts = $this->hospitalRepository->getHospitalChartData();
 
-        // Format the data for the response
         $data = [];
         foreach ($counts as $count) {
             $data[$count->date] = $count->count;
@@ -51,11 +45,12 @@ class HospitalController extends Controller
         // Get the total count of hospitals
         $totalCount = Hospital::count();
 
+        // Return the response in JSON format
         return response()->json([
             'status' => 'success',
             'data' => [
-                'dailyCounts' => $data,
-                'totalCount' => $totalCount,
+                'dailyCounts' => $data, // Daily counts of hospitals registered
+                'totalCount' => $totalCount, // Total count of hospitals
             ],
             'message' => 'Chart data retrieved successfully'
         ]);
@@ -74,25 +69,12 @@ class HospitalController extends Controller
 
     public function store(HospitalRequest $request)
     {
-        // Create a hospital first
-        $hospital = Hospital::create($request->validated());
-
-        // Generate a unique verification code
-        $verificationCode = Str::random(32);
-
-        // Store the verification code in the hospital_notifications table
-        DB::table('hospital_notifications')->updateOrInsert(
-            ['hospital_id' => $hospital->id],
-            ['status' => 'pending', 'verification_code' => $verificationCode]
-        );
-
-        // Send the verification email with the code
-        Notification::send($hospital, new HospitalNotification($hospital, 'verification', $verificationCode));
+        $hospital = $this->hospitalRepository->createHospital($request);
 
         return response()->json([
             'status' => 'success',
             'message' => 'Verification email sent. Please verify your email before proceeding.',
-            'hospital_id' => $hospital->id // You might want to return the ID for reference
+            'hospital_id' => $hospital->id
         ], 201);
     }
 
@@ -131,38 +113,14 @@ class HospitalController extends Controller
 
     public function verifyCode(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email|exists:hospitals,email',
-            'verification_code' => 'required|string'
-        ]);
+        $result = $this->hospitalRepository->verifyCode($request);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Invalid input',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        $hospital = Hospital::where('email', $request->input('email'))->first();
-        $notification = DB::table('hospital_notifications')
-            ->where('hospital_id', $hospital->id)
-            ->where('verification_code', $request->input('verification_code'))
-            ->first();
-
-        if (!$notification) {
+        if (!$result) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Invalid or expired verification code'
             ], 400);
         }
-
-        // Update the notification status
-        DB::table('hospital_notifications')->where('id', $notification->id)->update(['status' => 'completed']);
-
-        // Update the hospital's email_verified field
-        $hospital->email_verified_at = now(); // Set the timestamp for email verification
-        $hospital->save();
 
         return response()->json([
             'status' => 'success',
@@ -170,18 +128,15 @@ class HospitalController extends Controller
         ]);
     }
 
+    //http://localhost:8025/ and also php artisan queue work for run nitifcation
     public function update(HospitalRequest $request, $id)
     {
-        $hospital = Hospital::findOrFail($id);
-
-        $hospital->update($request->validated());
-
-        Notification::send($hospital, new HospitalNotification($hospital, 'update'));
+        $hospital = $this->hospitalRepository->updateHospital($request, $id);
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Hospital updated successfully. A confirmation email has been sent.',
-            'hospital' => new HospitalResource($hospital), // Assuming you're using a resource
+            'message' => 'Hospital updated successfully',
+            'hospital' => new HospitalResource($hospital)
         ]);
     }
 }

@@ -4,12 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class AmbulanceService extends Model
 {
-    use HasFactory;
-
-    use HasFactory;
+    use HasFactory ,Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -36,6 +35,8 @@ class AmbulanceService extends Model
     {
         return $this->belongsTo(Hospital::class);
     }
+
+    
 
     /**
      * Get the drivers assigned to the ambulance.

@@ -1,39 +1,37 @@
 <?php
-
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\DB;
 
-class HospitalNotification extends Notification implements ShouldQueue
+class AmbulanceServiceNotification extends Notification
 {
     use Queueable;
 
-    protected $hospital;
+    protected $ambulanceService;
     protected $type;
     protected $verificationCode;
 
-    public function __construct($hospital, $type, $verificationCode = null)
+    public function __construct($ambulanceService, $type, $verificationCode = null)
     {
-        $this->hospital = $hospital;
+        $this->ambulanceService = $ambulanceService;
         $this->type = $type;
         $this->verificationCode = $verificationCode;
     }
 
     public function failed(\Exception $exception)
     {
-        DB::table('hospital_notifications')
-            ->where('hospital_id', $this->hospital->id)
+        DB::table('ambulance_service_notifications')
+            ->where('ambulance_service_id', $this->ambulanceService->id)
             ->update(['status' => 'failed']);
     }
 
     public function markAsCompleted()
     {
-        DB::table('hospital_notifications')
-            ->where('hospital_id', $this->hospital->id)
+        DB::table('ambulance_service_notifications')
+            ->where('ambulance_service_id', $this->ambulanceService->id)
             ->update(['status' => 'completed']);
     }
 
@@ -44,6 +42,14 @@ class HospitalNotification extends Notification implements ShouldQueue
 
     public function toMail($notifiable)
     {
+        // Get the email from the hospital associated with the ambulance service
+        $email = $this->ambulanceService->hospital->email;
+
+        if (!$email) {
+            \Log::error('Hospital email not found for ambulance service ID: ' . $this->ambulanceService->id);
+            return; // Handle this as needed
+        }
+
         switch ($this->type) {
             case 'welcome':
                 return $this->welcomeEmail();
@@ -62,7 +68,7 @@ class HospitalNotification extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject('Welcome to Our Hospital Platform')
-            ->greeting('Hello, ' . $this->hospital->name)
+            ->greeting('Hello, ' . $this->ambulanceService->hospital->name)
             ->line('Congratulations on successfully registering your hospital!')
             ->line('Thank you for choosing our platform.');
     }
@@ -80,7 +86,7 @@ class HospitalNotification extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject('Hospital Registration Confirmed')
-            ->greeting('Hello, ' . $this->hospital->name)
+            ->greeting('Hello, ' . $this->ambulanceService->hospital->name)
             ->line('Your hospital registration is confirmed.')
             ->line('We are excited to have you on board.');
     }
@@ -89,7 +95,7 @@ class HospitalNotification extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject('Your Hospital Information Has Been Updated')
-            ->greeting('Hello, ' . $this->hospital->name)
+            ->greeting('Hello, ' . $this->ambulanceService->hospital->name)
             ->line('Your hospital information has been successfully updated.')
             ->line('Thank you for keeping your details up to date.')
             ->line('If you did not make this change, please contact support.');
@@ -105,7 +111,7 @@ class HospitalNotification extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            //
+            // Add any additional data to be included in the notification array
         ];
     }
 }

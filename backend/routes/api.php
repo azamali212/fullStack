@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Ambulance\AmbulanceServiceController;
 use App\Http\Controllers\Auth\HospitalAdminAuth\HospitalAdminAuthController;
 use App\Http\Controllers\Auth\SuperAdminLoginController;
 use App\Http\Controllers\Hospital\HospitalController;
@@ -50,5 +51,8 @@ Route::middleware('auth:api')->group(function () {
     Route::put('hospital/{id}', [HospitalController::class, 'update'])->name('hospital.update')->middleware('permission:hospitals.edit');
     Route::get('/hospitals/chart', [HospitalController::class, 'getHospitalChartData']);
     Route::put('/hospitals/{id}/profile', [HospitalProfileController::class, 'update'])->middleware('permission:hospitals.profileSetting');
+    Route::get('/ambulanceService/chart', [AmbulanceServiceController::class, 'getAmbulanceServiceChartData']);
+    Route::get('/ambulanceService', [AmbulanceServiceController::class, 'index'])->middleware('permission:AmbulanceService.index');
+    Route::post('ambulanceService/store', [AmbulanceServiceController::class, 'store'])->middleware('permission:AmbulanceService.store');
 });
 
