@@ -54,5 +54,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/ambulanceService/chart', [AmbulanceServiceController::class, 'getAmbulanceServiceChartData']);
     Route::get('/ambulanceService', [AmbulanceServiceController::class, 'index'])->middleware('permission:AmbulanceService.index');
     Route::post('ambulanceService/store', [AmbulanceServiceController::class, 'store'])->middleware('permission:AmbulanceService.store');
+    Route::put('ambulanceService/{id}', [AmbulanceServiceController::class, 'update'])->name('update')->middleware('permission:AmbulanceService.edit');
+    Route::get('ambulanceService/{id}', [AmbulanceServiceController::class, 'show'])->middleware('permission:AmbulanceService.show');
 });
 

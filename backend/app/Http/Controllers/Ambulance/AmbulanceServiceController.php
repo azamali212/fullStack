@@ -91,7 +91,13 @@ class AmbulanceServiceController extends Controller
      */
     public function show($id)
     {
-        //
+        $ambulanceService = $this->ambulanceServiceRepository->showAmbulance($id);
+
+        return response()->json([
+            'status' => 'success',
+            'ambulance' => $ambulanceService,
+        ], 201);
+
     }
 
     /**
@@ -101,9 +107,15 @@ class AmbulanceServiceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreAmbulanceServiceRequest $request, $id)
     {
-        //
+        $ambulanceService = $this->ambulanceServiceRepository->updateAmbulance($request, $id);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Hospital updated successfully',
+            'ambulance' => new AmbulanceServiceResource($ambulanceService)
+        ]);
     }
 
     /**

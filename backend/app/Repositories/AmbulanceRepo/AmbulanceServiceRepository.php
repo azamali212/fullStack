@@ -2,12 +2,10 @@
 
 namespace App\Repositories\AmbulanceRepo;
 
+
 use App\Models\AmbulanceService;
-use App\Notifications\AmbulanceServiceNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Str;
 
 class AmbulanceServiceRepository implements AmbulanceServiceRepositoryInterface
 {
@@ -44,6 +42,17 @@ class AmbulanceServiceRepository implements AmbulanceServiceRepositoryInterface
 
     return $ambulanceService;
     }
-    public function updateAmbulance($request, $id) {}
+    public function updateAmbulance($request, $id) {
+        $ambulanceService = AmbulanceService::findOrFail($id);
+        $ambulanceService->update($request->validated());
+
+        return $ambulanceService;
+    }
     public function verifyCode($request) {}
+
+    public function showAmbulance($id){
+        $ambulanceService = AmbulanceService::findOrFail($id);
+
+        return $ambulanceService;
+    }
 }
