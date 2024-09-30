@@ -3,8 +3,10 @@
 namespace App\Repositories\AmbulanceRepo;
 
 use App\Models\AmbulanceDriver;
+use App\Notifications\BaseNotificationSystem;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class AmbulanceDriverRepository implements AmbulanceDriverRepositoryInterface
 {
@@ -16,6 +18,7 @@ class AmbulanceDriverRepository implements AmbulanceDriverRepositoryInterface
             ->orderBy('date', 'asc')
             ->get();
     }
+
     public function getAllAmbulanceDriver($request)
     {
         $query = AmbulanceDriver::query();
@@ -34,16 +37,22 @@ class AmbulanceDriverRepository implements AmbulanceDriverRepositoryInterface
 
         return $query->paginate(10);
     }
+
     public function createAmbulanceDriver($request)
     {
         // Create the ambulance service using the request data
     $ambulanceDriver = AmbulanceDriver::create($request->validated());
 
+    Notification::send($ambulanceDriver, new BaseNotificationSystem($ambulanceDriver, 'verification', $request->verification_code));
+
     return $ambulanceDriver;
     }
+
     public function updateAmbulanceDriver($request, $id) {
         $ambulanceDriver = AmbulanceDriver::findOrFail($id);
         $ambulanceDriver->update($request->validated());
+
+        Notification::send($ambulanceDriver, new BaseNotificationSystem($ambulanceDriver, 'update'));
 
         return $ambulanceDriver;
     }

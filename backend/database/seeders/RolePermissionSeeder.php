@@ -60,6 +60,7 @@ class RolePermissionSeeder extends Seeder
             'AmbulanceDriver.create',
             'AmbulanceDriver.store',
             'AmbulanceDriver.destroy',
+            'AmbulanceDriver.edit',
             'Ambulance.assignSystem',
         ];
 
@@ -104,6 +105,7 @@ class RolePermissionSeeder extends Seeder
                 'AmbulanceDriver.show',
                 'AmbulanceDriver.create',
                 'AmbulanceDriver.store',
+                'AmbulanceDriver.edit',
                 'AmbulanceDriver.destroy',
                 'Ambulance.assignSystem',
             ],
@@ -119,6 +121,7 @@ class RolePermissionSeeder extends Seeder
                 'AmbulanceDriver.index',
                 'AmbulanceDriver.show',
                 'AmbulanceDriver.create',
+                'AmbulanceDriver.edit',
                 'AmbulanceDriver.store',
                 'AmbulanceDriver.destroy',
                 'Ambulance.assignSystem',

@@ -52,11 +52,7 @@ class AmbulanceDriverController extends Controller
           $ambulanceDriver = $this->ambulanceDriverRepository->createAmbulanceDriver($request);
 
           // Return the response with the created ambulance service ID
-          return response()->json([
-              'status' => 'success',
-              'message' => 'Verification email sent. Please verify your email before proceeding.',
-              //'ambulance_service_id' => $ambulanceDriver->id // Corrected variable usage
-          ], 201);
+          return response()->json(['data' => $ambulanceDriver, 'message' => 'Ambulance Driver created and notification sent']);
     }
 
     /**
@@ -67,7 +63,12 @@ class AmbulanceDriverController extends Controller
      */
     public function show($id)
     {
-        //
+        $ambulanceDriver = $this->ambulanceDriverRepository->showAmbulanceDriver($id);
+
+        return response()->json([
+            'status' => 'success',
+            'ambulance' => $ambulanceDriver,
+        ], 201);
     }
 
     /**
@@ -77,9 +78,16 @@ class AmbulanceDriverController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreAmbulanceDriverRequest $request, $id)
     {
-        //
+        $ambulanceDriver = $this->ambulanceDriverRepository->updateAmbulanceDriver($request,$id);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $ambulanceDriver,
+            'message' => 'Ambulance Driver created and notification sent',
+            'ambulance' => new AmbulanceDriverResource($ambulanceDriver)
+        ]);
     }
 
     /**
