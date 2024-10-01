@@ -11,5 +11,6 @@ interface AmbulanceDriverRepositoryInterface
     public function updateAmbulanceDriver($request, $id);
     public function verifyCode($request);
     public function showAmbulanceDriver($id);
+    public function assignShiftAndAmbulance($driverId, $ambulanceId, $shiftDetails);
 }
 

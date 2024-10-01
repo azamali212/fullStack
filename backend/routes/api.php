@@ -76,5 +76,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('ambulanceDriver/store', [AmbulanceDriverController::class, 'store'])->middleware('permission:AmbulanceDriver.store');
     Route::put('ambulanceDriver/{id}', [AmbulanceDriverController::class, 'update'])->name('update')->middleware('permission:AmbulanceDriver.edit');
     Route::get('ambulanceDriver/{id}', [AmbulanceDriverController::class, 'show'])->middleware('permission:AmbulanceDriver.show');
+    Route::post('/drivers/{driverId}/ambulances/{ambulanceId}/assign-shift', [AmbulanceDriverController::class, 'assignShiftAndAmbulance']);
 });
 

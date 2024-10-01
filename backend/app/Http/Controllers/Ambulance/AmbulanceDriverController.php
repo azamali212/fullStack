@@ -90,6 +90,14 @@ class AmbulanceDriverController extends Controller
         ]);
     }
 
+    public function assignShiftAndAmbulance(Request $request, $driverId, $ambulanceId)
+    {
+        $shiftDetails = $request->only(['shift_date', 'start_time', 'end_time', 'shift_type', 'notes']);
+        $shift = $this->ambulanceDriverRepository->assignShiftAndAmbulance($driverId, $ambulanceId, $shiftDetails);
+
+        return response()->json(['shift' => $shift], 200);
+    }
+
     /**
      * Remove the specified resource from storage.
      *

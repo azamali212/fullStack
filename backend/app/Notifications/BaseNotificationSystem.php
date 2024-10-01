@@ -8,28 +8,31 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\DB;
 
-
 class BaseNotificationSystem extends Notification implements ShouldQueue
 {
     use Queueable;
 
-
     protected $user;
     protected $type;
     protected $verificationCode;
+    protected $ambulance;
+    protected $shift;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
+    public function __construct($user, $type, $verificationCode = null, $ambulance = null, $shift = null)
+    {
+        $this->user = $user;
+        $this->type = $type;
+        $this->verificationCode = $verificationCode;
+        $this->ambulance = $ambulance;
+        $this->shift = $shift;
 
-     public function __construct($user, $type, $verificationCode = null)
-     {
-         $this->user = $user;
-         $this->type = $type;
-         $this->verificationCode = $verificationCode;
-     }
+        //dd($this->type);
+    }
 
     /**
      * Get the notification's delivery channels.
@@ -59,6 +62,10 @@ class BaseNotificationSystem extends Notification implements ShouldQueue
                 return $this->confirmationEmail();
             case 'update':
                 return $this->updateEmail();
+            case 'shift_assignment':
+                return $this->shiftAssignmentEmail();
+            case 'ambulance_assignment':
+                return $this->ambulanceAssignmentEmail();
             default:
                 return $this->defaultEmail();
         }
@@ -100,6 +107,27 @@ class BaseNotificationSystem extends Notification implements ShouldQueue
             ->line('Thank you for keeping your details up to date.');
     }
 
+    protected function shiftAssignmentEmail()
+    {
+        return (new MailMessage)
+            ->subject('New Shift Assignment')
+            ->greeting('Hello ' . $this->user->name)
+            ->line('You have been assigned a new shift.')
+            ->line('Shift Date: ' . $this->shift->shift_date)
+            ->line('Shift Time: ' . $this->shift->start_time . ' - ' . $this->shift->end_time)
+            ->line('Thank you for your service!');
+    }
+
+    protected function ambulanceAssignmentEmail()
+    {
+        return (new MailMessage)
+            ->subject('New Ambulance Assignment')
+            ->greeting('Hello ' . $this->user->name)
+            ->line('You have been assigned a new ambulance.')
+            ->line('Ambulance: ' . $this->ambulance->license_plate)
+            ->line('Thank you for your service!');
+    }
+
     protected function defaultEmail()
     {
         return (new MailMessage)
@@ -116,7 +144,7 @@ class BaseNotificationSystem extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            //
+            // Add any array data if needed
         ];
     }
 }
