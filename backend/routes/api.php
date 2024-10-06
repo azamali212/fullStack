@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Ambulance\AmbulanceDriverController;
 use App\Http\Controllers\Ambulance\AmbulanceServiceController;
+use App\Http\Controllers\AmbulanceDriverShift\DriverShiftController;
 use App\Http\Controllers\Auth\HospitalAdminAuth\HospitalAdminAuthController;
 use App\Http\Controllers\Auth\SuperAdminLoginController;
 use App\Http\Controllers\Hospital\HospitalController;
@@ -67,15 +68,17 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/ambulanceService/chart', [AmbulanceServiceController::class, 'getAmbulanceServiceChartData']);
     Route::get('/ambulanceService', [AmbulanceServiceController::class, 'index'])->middleware('permission:AmbulanceService.index');
     Route::post('ambulanceService/store', [AmbulanceServiceController::class, 'store'])->middleware('permission:AmbulanceService.store');
-    Route::put('ambulanceService/{id}', [AmbulanceServiceController::class, 'update'])->name('update')->middleware('permission:AmbulanceService.edit');
+    Route::put('ambulanceService/{id}', [AmbulanceServiceController::class, 'update'])->name('ambulanceService.update')->name('update')->middleware('permission:AmbulanceService.edit');
     Route::get('ambulanceService/{id}', [AmbulanceServiceController::class, 'show'])->middleware('permission:AmbulanceService.show');
 
     //Ambulance Driver Routes
     Route::get('/ambulanceService/chart', [AmbulanceDriverController::class, 'getAmbulanceServiceChartData']);
     Route::get('/ambulanceDriver', [AmbulanceDriverController::class, 'index'])->middleware('permission:AmbulanceDriver.index');
     Route::post('ambulanceDriver/store', [AmbulanceDriverController::class, 'store'])->middleware('permission:AmbulanceDriver.store');
-    Route::put('ambulanceDriver/{id}', [AmbulanceDriverController::class, 'update'])->name('update')->middleware('permission:AmbulanceDriver.edit');
-    Route::get('ambulanceDriver/{id}', [AmbulanceDriverController::class, 'show'])->middleware('permission:AmbulanceDriver.show');
-    Route::post('/drivers/{driverId}/ambulances/{ambulanceId}/assign-shift', [AmbulanceDriverController::class, 'assignShiftAndAmbulance']);
+    Route::put('ambulanceDriver/{id}', [AmbulanceDriverController::class, 'update'])->name('ambulanceDriver.update')->name('update')->middleware('permission:AmbulanceDriver.edit');
+    Route::get('/ambulanceDriver/{id}', [AmbulanceDriverController::class, 'show'])->middleware('permission:AmbulanceDriver.show');
+    //Route::post('/drivers/{driverId}/ambulances/{ambulanceId}/assign-shift', [AmbulanceDriverController::class, 'assignShiftAndAmbulance']);
+    Route::get('/ambulanceDriverShift', [DriverShiftController::class, 'index'])->middleware('permission:AmbulanceDriverShift.index');
+    Route::post('/ambulanceDriverShift/store', [DriverShiftController::class, 'store'])->middleware('permission:AmbulanceDriverShift.store');
+    Route::post('assign-shift-ambulance/{driverId}/{ambulanceId}', [DriverShiftController::class, 'assignShiftAndAmbulance'])->name('driver-shifts.assign')->middleware('permission:AmbulanceDriverShift.shiftAssgin');
 });
-

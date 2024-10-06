@@ -17,6 +17,7 @@ class ShiftScheduleSeeder extends Seeder
     {
         ShiftSchedule::create([
             'ambulance_driver_id' => 1, // Assuming this ID exists in the ambulance_drivers table
+            'ambulance_service_id' => 2,
             'shift_date' => '2024-08-25',
             'start_time' => '08:00:00',
             'end_time' => '16:00:00',
@@ -28,6 +29,7 @@ class ShiftScheduleSeeder extends Seeder
 
         ShiftSchedule::create([
             'ambulance_driver_id' => 2, // Assuming this ID exists in the ambulance_drivers table
+            'ambulance_service_id' => 1,
             'shift_date' => '2024-08-25',
             'start_time' => '16:00:00',
             'end_time' => '00:00:00',
@@ -39,6 +41,7 @@ class ShiftScheduleSeeder extends Seeder
 
         ShiftSchedule::create([
             'ambulance_driver_id' => 3, // Assuming this ID exists in the ambulance_drivers table
+            'ambulance_service_id' => 3,
             'shift_date' => '2024-08-25',
             'start_time' => '16:00:00',
             'end_time' => '00:00:00',

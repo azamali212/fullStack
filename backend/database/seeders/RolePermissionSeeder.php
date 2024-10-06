@@ -62,6 +62,17 @@ class RolePermissionSeeder extends Seeder
             'AmbulanceDriver.destroy',
             'AmbulanceDriver.edit',
             'Ambulance.assignSystem',
+            
+            //Shift
+            'AmbulanceDriverShift.index',
+            'AmbulanceDriverShift.show',
+            'AmbulanceDriverShift.create',
+            'AmbulanceDriverShift.store',
+            'AmbulanceDriverShift.destroy',
+            'AmbulanceDriverShift.edit',
+            'AmbulanceDriverShift.shiftAssgin',
+            'AmbulanceDriverShift.ambulanceAssgin',
+            'AmbulanceDriverShift.request',
         ];
 
         foreach ($permissions as $permission) {
@@ -108,6 +119,14 @@ class RolePermissionSeeder extends Seeder
                 'AmbulanceDriver.edit',
                 'AmbulanceDriver.destroy',
                 'Ambulance.assignSystem',
+                'AmbulanceDriverShift.index',
+                'AmbulanceDriverShift.show',
+                'AmbulanceDriverShift.create',
+                'AmbulanceDriverShift.store',
+                'AmbulanceDriverShift.destroy',
+                'AmbulanceDriverShift.edit',
+                'AmbulanceDriverShift.shiftAssgin',
+                'AmbulanceDriverShift.ambulanceAssgin',
             ],
             'Hospital Administrator' => [
                 'hospitals.index',
@@ -125,8 +144,21 @@ class RolePermissionSeeder extends Seeder
                 'AmbulanceDriver.store',
                 'AmbulanceDriver.destroy',
                 'Ambulance.assignSystem',
+                'AmbulanceDriverShift.index',
+                'AmbulanceDriverShift.show',
+                'AmbulanceDriverShift.create',
+                'AmbulanceDriverShift.store',
+                'AmbulanceDriverShift.destroy',
+                'AmbulanceDriverShift.request',
+                'AmbulanceDriverShift.edit',
+                'AmbulanceDriverShift.shiftAssgin',
+                'AmbulanceDriverShift.ambulanceAssgin',
             ],
-            'Editor' => [],
+            'AmbulanceDriverProfile' => [
+                'AmbulanceDriverShift.request',
+                'AmbulanceDriverShift.show',
+                'AmbulanceDriver.show',
+            ],
             'User' => []
         ];
 

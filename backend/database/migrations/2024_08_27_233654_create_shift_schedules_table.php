@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('shift_schedules', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('ambulance_driver_id'); // Foreign key for ambulance drivers
+            $table->unsignedBigInteger('ambulance_service_id');
             $table->date('shift_date'); // Date of the shift
             $table->time('start_time'); // Start time of the shift
             $table->time('end_time'); // End time of the shift

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repositories\AmbulanceDriverShiftRepo\AmbulanceDriverShiftRepository;
+use App\Repositories\AmbulanceDriverShiftRepo\AmbulanceDriverShiftRepositoryInterface;
 use App\Repositories\AmbulanceRepo\AmbulanceDriverRepository;
 use App\Repositories\AmbulanceRepo\AmbulanceDriverRepositoryInterface;
 use App\Repositories\AmbulanceRepo\AmbulanceServiceRepository;
@@ -22,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(HospitalRepositoryInterface::class, HospitalRepository::class);
         $this->app->bind(AmbulanceServiceRepositoryInterface::class,  AmbulanceServiceRepository::class);
         $this->app->bind(AmbulanceDriverRepositoryInterface::class,  AmbulanceDriverRepository::class);
+        $this->app->bind(AmbulanceDriverShiftRepositoryInterface::class,  AmbulanceDriverShiftRepository::class);
     }
 
     /**
