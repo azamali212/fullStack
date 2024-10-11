@@ -87,6 +87,11 @@ class Hospital extends Authenticatable
          return $this->belongsTo(User::class);
      }
 
+     public function nurse()
+     {
+         return $this->hasMany(Nurse::class);
+     }
+
 
     // Relationships for permissions
     public function roles()

@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\HospitalAdminAuth\HospitalAdminAuthController;
 use App\Http\Controllers\Auth\SuperAdminLoginController;
 use App\Http\Controllers\Hospital\HospitalController;
 use App\Http\Controllers\Hospital\HospitalProfileController;
+use App\Http\Controllers\Nurses\NursesProfileController;
 use App\Http\Controllers\RolePermission\PermissionController;
 use App\Http\Controllers\RolePermission\RoleController;
 use App\Http\Controllers\SuperAdmin\UserController;
@@ -81,4 +82,10 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/ambulanceDriverShift', [DriverShiftController::class, 'index'])->middleware('permission:AmbulanceDriverShift.index');
     Route::post('/ambulanceDriverShift/store', [DriverShiftController::class, 'store'])->middleware('permission:AmbulanceDriverShift.store');
     Route::post('assign-shift-ambulance/{driverId}/{ambulanceId}', [DriverShiftController::class, 'assignShiftAndAmbulance'])->name('driver-shifts.assign')->middleware('permission:AmbulanceDriverShift.shiftAssgin');
+
+    //Nurses Routes
+    Route::get('/nursesProfile/{id}',[NursesProfileController::class,'show'])->name('nursesProfile.show')->middleware('permission:Nurse.profile.show');
+    Route::put('/nursesProfile/{id}', [NursesProfileController::class, 'update'])->name('nursesProfile.update')->middleware('permission:Nurse.profile.update');
 });
+
+

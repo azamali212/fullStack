@@ -24,6 +24,7 @@ class RolePermissionSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         // Define permissions
+
         $permissions = [
             'roles.index',
             'roles.show',
@@ -62,7 +63,7 @@ class RolePermissionSeeder extends Seeder
             'AmbulanceDriver.destroy',
             'AmbulanceDriver.edit',
             'Ambulance.assignSystem',
-            
+
             //Shift
             'AmbulanceDriverShift.index',
             'AmbulanceDriverShift.show',
@@ -73,6 +74,45 @@ class RolePermissionSeeder extends Seeder
             'AmbulanceDriverShift.shiftAssgin',
             'AmbulanceDriverShift.ambulanceAssgin',
             'AmbulanceDriverShift.request',
+
+            //Staff Profile 
+            'Nurse.profile.show',
+            'Nurse.profile.update',
+
+            'Guard.profile.show',
+            'Guard.profile.update',
+
+            'Cleaner.profile.show',
+            'Cleaner.profile.update',
+
+            'Worker.profile.show',
+            'Worker.profile.update',
+
+            //Staff 
+            'Nurses.index',
+            'Nurses.show',
+            'Nurses.create',
+            'Nurses.update',
+            'Nurses.destroy',
+            'Nurses.edit',
+            'Cleaner.index',
+            'Cleaner.show',
+            'Cleaner.create',
+            'Cleaner.update',
+            'Cleaner.destroy',
+            'Cleaner.edit',
+            'Guard.index',
+            'Guard.show',
+            'Guard.create',
+            'Guard.update',
+            'Guard.destroy',
+            'Guard.edit',
+            'Worker.index',
+            'Worker.show',
+            'Worker.create',
+            'Worker.update',
+            'Worker.destroy',
+            'Worker.edit',
         ];
 
         foreach ($permissions as $permission) {
@@ -127,6 +167,31 @@ class RolePermissionSeeder extends Seeder
                 'AmbulanceDriverShift.edit',
                 'AmbulanceDriverShift.shiftAssgin',
                 'AmbulanceDriverShift.ambulanceAssgin',
+                //Staff 
+                'Nurses.index',
+                'Nurses.show',
+                'Nurses.create',
+                'Nurses.update',
+                'Nurses.destroy',
+                'Nurses.edit',
+                'Cleaner.index',
+                'Cleaner.show',
+                'Cleaner.create',
+                'Cleaner.update',
+                'Cleaner.destroy',
+                'Cleaner.edit',
+                'Guard.index',
+                'Guard.show',
+                'Guard.create',
+                'Guard.update',
+                'Guard.destroy',
+                'Guard.edit',
+                'Worker.index',
+                'Worker.show',
+                'Worker.create',
+                'Worker.update',
+                'Worker.destroy',
+                'Worker.edit',
             ],
             'Hospital Administrator' => [
                 'hospitals.index',
@@ -153,13 +218,53 @@ class RolePermissionSeeder extends Seeder
                 'AmbulanceDriverShift.edit',
                 'AmbulanceDriverShift.shiftAssgin',
                 'AmbulanceDriverShift.ambulanceAssgin',
+                //Staff 
+                'Nurses.index',
+                'Nurses.show',
+                'Nurses.create',
+                'Nurses.update',
+                'Nurses.destroy',
+                'Nurses.edit',
+                'Cleaner.index',
+                'Cleaner.show',
+                'Cleaner.create',
+                'Cleaner.update',
+                'Cleaner.destroy',
+                'Cleaner.edit',
+                'Guard.index',
+                'Guard.show',
+                'Guard.create',
+                'Guard.update',
+                'Guard.destroy',
+                'Guard.edit',
+                'Worker.index',
+                'Worker.show',
+                'Worker.create',
+                'Worker.update',
+                'Worker.destroy',
+                'Worker.edit',
             ],
+            
             'AmbulanceDriverProfile' => [
                 'AmbulanceDriverShift.request',
                 'AmbulanceDriverShift.show',
                 'AmbulanceDriver.show',
             ],
-            'User' => []
+
+            'Nurses' => [
+                'Nurse.profile.show',
+                'Nurse.profile.update',
+            ],
+
+            'Guard' => [
+                'Guard.profile.show',
+                'Guard.profile.update',
+            ],
+
+            'Cleaner' => [
+                'Cleaner.profile.show',
+                'Cleaner.profile.update',
+            ],
         ];
 
         foreach ($roles as $roleName => $permissions) {

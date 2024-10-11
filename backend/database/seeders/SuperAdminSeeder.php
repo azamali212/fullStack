@@ -29,7 +29,15 @@ class SuperAdminSeeder extends Seeder
             'password' => bcrypt('admin'),
         ]);
 
+        $nurses = User::create([
+            //'role_id' => '2',
+            'name' => 'nurses',
+            'email' => 'nurses@laravel-adminlte.com',
+            'password' => bcrypt('admin'),
+        ]);
+
         $master_admin->assignRole(1);
         $admin->assignRole(2);
+        $nurses->assignRole(4);
     }
 }
