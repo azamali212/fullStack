@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\HospitalAdminAuth\HospitalAdminAuthController;
 use App\Http\Controllers\Auth\SuperAdminLoginController;
 use App\Http\Controllers\Hospital\HospitalController;
 use App\Http\Controllers\Hospital\HospitalProfileController;
+use App\Http\Controllers\Nurses\NursesController;
 use App\Http\Controllers\Nurses\NursesProfileController;
 use App\Http\Controllers\RolePermission\PermissionController;
 use App\Http\Controllers\RolePermission\RoleController;
@@ -86,6 +87,9 @@ Route::middleware('auth:api')->group(function () {
     //Nurses Routes
     Route::get('/nursesProfile/{id}',[NursesProfileController::class,'show'])->name('nursesProfile.show')->middleware('permission:Nurse.profile.show');
     Route::put('/nursesProfile/{id}', [NursesProfileController::class, 'update'])->name('nursesProfile.update')->middleware('permission:Nurse.profile.update');
+    Route::get('/nurses', [NursesController::class, 'index'])->name('nurse.index')->middleware('permission:Nurses.index');
+    Route::post('/nurses/store', [NursesController::class, 'store'])->name('nurse.store')->middleware('permission:Nurses.store');
+    Route::put('/nurses/{id}', [NursesController::class, 'update'])->name('nurse.update')->middleware('permission:Nurses.edit');
 });
 
 

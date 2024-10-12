@@ -91,6 +91,7 @@ class RolePermissionSeeder extends Seeder
             //Staff 
             'Nurses.index',
             'Nurses.show',
+            'Nurses.store',
             'Nurses.create',
             'Nurses.update',
             'Nurses.destroy',
@@ -170,6 +171,7 @@ class RolePermissionSeeder extends Seeder
                 //Staff 
                 'Nurses.index',
                 'Nurses.show',
+                'Nurses.store',
                 'Nurses.create',
                 'Nurses.update',
                 'Nurses.destroy',
@@ -221,6 +223,7 @@ class RolePermissionSeeder extends Seeder
                 //Staff 
                 'Nurses.index',
                 'Nurses.show',
+                'Nurses.store',
                 'Nurses.create',
                 'Nurses.update',
                 'Nurses.destroy',

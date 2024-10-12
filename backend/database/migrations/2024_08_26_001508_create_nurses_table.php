@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('study_details');
             $table->unsignedBigInteger('hospital_id')->nullable(); 
             $table->string('pdf_cv')->nullable();
+            $table->string('verification_code')->nullable();
             $table->timestamps();
         });
     }

@@ -30,6 +30,7 @@ class BaseNotificationSystem extends Notification implements ShouldQueue
         $this->verificationCode = $verificationCode;
         $this->ambulance = $ambulance;
         $this->shift = $shift;
+        //$this->nurses = $nurses;
 
         //dd($this->type);
     }

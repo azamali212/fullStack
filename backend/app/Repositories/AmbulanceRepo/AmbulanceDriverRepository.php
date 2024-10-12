@@ -43,14 +43,15 @@ class AmbulanceDriverRepository implements AmbulanceDriverRepositoryInterface
     public function createAmbulanceDriver($request)
     {
         // Create the ambulance service using the request data
-    $ambulanceDriver = AmbulanceDriver::create($request->validated());
+        $ambulanceDriver = AmbulanceDriver::create($request->validated());
 
-    Notification::send($ambulanceDriver, new BaseNotificationSystem($ambulanceDriver, 'verification', $request->verification_code));
+        Notification::send($ambulanceDriver, new BaseNotificationSystem($ambulanceDriver, 'verification', $request->verification_code));
 
-    return $ambulanceDriver;
+        return $ambulanceDriver;
     }
 
-    public function updateAmbulanceDriver($request, $id) {
+    public function updateAmbulanceDriver($request, $id)
+    {
         $ambulanceDriver = AmbulanceDriver::findOrFail($id);
         $ambulanceDriver->update($request->validated());
 
@@ -60,8 +61,9 @@ class AmbulanceDriverRepository implements AmbulanceDriverRepositoryInterface
     }
     public function verifyCode($request) {}
 
-    public function assignShiftAndAmbulance($driverId, $ambulanceId, $shiftDetails){
-        
+    public function assignShiftAndAmbulance($driverId, $ambulanceId, $shiftDetails)
+    {
+
         $driver = AmbulanceDriver::findOrFail($driverId);
         $ambulance = AmbulanceService::findOrFail($ambulanceId);
 
@@ -94,7 +96,8 @@ class AmbulanceDriverRepository implements AmbulanceDriverRepositoryInterface
     }
 
 
-    public function showAmbulanceDriver($id){
+    public function showAmbulanceDriver($id)
+    {
         $ambulanceDriver = AmbulanceDriver::findOrFail($id);
 
         return $ambulanceDriver;
