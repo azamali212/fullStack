@@ -7,14 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\HospitalRequest;
 use App\Http\Resources\HospitalResource;
 use App\Models\Hospital;
-use App\Notifications\HospitalNotification;
 use App\Repositories\HospitalRepo\HospitalRepositoryInterface;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Validator;
 
 class HospitalController extends Controller
 {

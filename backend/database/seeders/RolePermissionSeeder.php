@@ -75,7 +75,7 @@ class RolePermissionSeeder extends Seeder
             'AmbulanceDriverShift.ambulanceAssgin',
             'AmbulanceDriverShift.request',
 
-            //Staff Profile 
+            //Staff Profile
             'Nurse.profile.show',
             'Nurse.profile.update',
 
@@ -88,7 +88,7 @@ class RolePermissionSeeder extends Seeder
             'Worker.profile.show',
             'Worker.profile.update',
 
-            //Staff 
+            //Staff
             'Nurses.index',
             'Nurses.show',
             'Nurses.store',
@@ -168,7 +168,7 @@ class RolePermissionSeeder extends Seeder
                 'AmbulanceDriverShift.edit',
                 'AmbulanceDriverShift.shiftAssgin',
                 'AmbulanceDriverShift.ambulanceAssgin',
-                //Staff 
+                //Staff
                 'Nurses.index',
                 'Nurses.show',
                 'Nurses.store',
@@ -220,7 +220,7 @@ class RolePermissionSeeder extends Seeder
                 'AmbulanceDriverShift.edit',
                 'AmbulanceDriverShift.shiftAssgin',
                 'AmbulanceDriverShift.ambulanceAssgin',
-                //Staff 
+                //Staff
                 'Nurses.index',
                 'Nurses.show',
                 'Nurses.store',
@@ -247,7 +247,7 @@ class RolePermissionSeeder extends Seeder
                 'Worker.destroy',
                 'Worker.edit',
             ],
-            
+
             'AmbulanceDriverProfile' => [
                 'AmbulanceDriverShift.request',
                 'AmbulanceDriverShift.show',

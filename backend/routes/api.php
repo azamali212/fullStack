@@ -90,6 +90,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/nurses', [NursesController::class, 'index'])->name('nurse.index')->middleware('permission:Nurses.index');
     Route::post('/nurses/store', [NursesController::class, 'store'])->name('nurse.store')->middleware('permission:Nurses.store');
     Route::put('/nurses/{id}', [NursesController::class, 'update'])->name('nurse.update')->middleware('permission:Nurses.edit');
+
+    
 });
 
 

@@ -19,21 +19,21 @@ class SuperAdminLoginController extends Controller
         ]);
 
         $credentials = $request->only('email', 'password');
-    
-        // Retrieve the hospital by email
         $user = User::where('email', $request->email)->first();
-        
+
         if ($user && Hash::check($request->password, $user->password)) {
-            // Authentication passed
             $token = $user->createToken('authToken')->plainTextToken;
+
+            // Include the user's role in the response
+            $role = $user->getRoleNames()->first(); // Assuming single role
 
             return response()->json([
                 'success' => true,
-                'token' => $token
+                'token' => $token,
+                'role' => $role, // Return role
             ]);
         }
-    
-        // Authentication failed
+
         return response()->json([
             'success' => false,
             'error' => 'Invalid credentials'
