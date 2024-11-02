@@ -1,0 +1,54 @@
+<div class="customizer" [ngClass]="{ open: isOpen }">
+  <div class="handle" (click)="isOpen = !isOpen">
+    <i class="i-Gear spin"></i>
+  </div>
+  <div class="customizer-body">
+    <div ngbAccordion>
+      <div ngbAccordionItem [collapsed]="false">
+        <h2 ngbAccordionHeader>
+          <button ngbAccordionButton>Layouts</button>
+        </h2>
+        <div ngbAccordionCollapse>
+          <div ngbAccordionBody>
+            <ng-template>
+              <div class="layouts">
+                <div *ngFor="let l of layouts" (click)="selectLayout(l)" class="layout-box"
+                  [ngClass]="{active: customizer.selectedLayout.name === l.name}">
+                  <img [src]="l.img" alt="" />
+                  <i class="i-Eye"></i>
+                </div>
+              </div>
+              <div class="text-center pt-3">
+                <hr>
+              </div>
+              <label class="checkbox checkbox-primary">
+                <input type="checkbox" [(ngModel)]="isRTL" (change)="toggleDir()">
+                <span>Enable RTL</span>
+                <span class="checkmark"></span>
+              </label>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+      <div ngbAccordionItem>
+        <h2 ngbAccordionHeader>
+          <button ngbAccordionButton>Sidebar Color</button>
+        </h2>
+        <div ngbAccordionCollapse>
+          <div ngbAccordionBody>
+            <ng-template>
+              <div class="colors">
+                <a *ngFor="let c of colors" class="color {{c.class}}"
+                  [ngClass]="{active: customizer?.selectedSidebarColor?.class === c.class}" (click)="selectSidebarColor(c)"
+                  [title]="c.class">
+                  <i class="i-Eye"></i>
+                </a>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,78 @@
+<div class="">
+    <div class="breadcrumb">
+        <h1>Bootstrap Table</h1>
+        <ul>
+            <li><a href="#">Data Table</a></li>
+            <li>Bootstrap Table</li>
+        </ul>
+    </div>
+
+    <div class="separator-breadcrumb border-top"></div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card o-hidden">
+                <form>
+                    <div class="mb-3 row px-3 py-3">
+                        <label for="table-complete-search" class="col-xs-3 col-sm-auto col-form-label">Full text search:</label>
+                        <div class="col-xs-3 col-sm-auto">
+                            <input
+                                id="table-complete-search"
+                                type="text"
+                                class="form-control"
+                                name="searchTerm"
+                                [(ngModel)]="service.searchTerm"
+                            />
+                        </div>
+                        @if (service.loading$ | async) {
+                            <span class="col col-form-label">Loading...</span>
+                        }
+                    </div>
+                
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col" role="button" class="px-3">#</th>
+                                <th scope="col" role="button" sortable="name" (sort)="onSort($event)">Country</th>
+                                <th scope="col" role="button" sortable="area" (sort)="onSort($event)">Area</th>
+                                <th scope="col" role="button" sortable="population" (sort)="onSort($event)">Population</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (country of countries$ | async; track country.id) {
+                                <tr>
+                                    <th scope="row" class="px-3">{{ country.id }}</th>
+                                    <td>
+                                        <img
+                                            [src]="'https://upload.wikimedia.org/wikipedia/commons/' + country.flag"
+                                            [alt]="'The flag of ' + country.name"
+                                            class="me-2"
+                                            style="width: 20px"
+                                        />
+                                        <ngb-highlight [result]="country.name" [term]="service.searchTerm" />
+                                    </td>
+                                    <td><ngb-highlight [result]="country.area | number" [term]="service.searchTerm" /></td>
+                                    <td><ngb-highlight [result]="country.population | number" [term]="service.searchTerm" /></td>
+                                </tr>
+                            } @empty {
+                                <tr>
+                                    <td colspan="4" style="text-align: center">No countries found</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                
+                    <div class="d-flex justify-content-between p-2">
+                        <ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="service.page" [pageSize]="service.pageSize">
+                        </ngb-pagination>
+                
+                        <select class="form-select" style="width: auto" name="pageSize" [(ngModel)]="service.pageSize">
+                            <option [ngValue]="2">2 items per page</option>
+                            <option [ngValue]="4">4 items per page</option>
+                            <option [ngValue]="6">6 items per page</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

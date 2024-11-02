@@ -1,0 +1,21 @@
+.badge {
+    font-weight: 600;
+}
+@each $name, $value in $theme-colors {
+    .badge-outline-#{$name} {
+        background: unset;
+        border: 1px solid $value;
+        color: $value;
+    }
+}
+
+.badge-top-container {
+    position: relative;
+    .badge {
+        top: -6px;
+        right: 2px;
+        width: 20px;
+        height: 20px;
+        z-index: 10;
+    }
+}

@@ -1,0 +1,33 @@
+@import 'colors';
+@import 'sidebar-compact/layout-sidebar-compact';
+@import 'sidebar-large/layout-sidebar-large';
+@import 'footer';
+
+// Common Layout Styles
+.app-admin-wrap {
+    width: 100%;
+}
+.main-content-wrap {
+    width: 100%;
+    float: right;
+    margin-top: $topbar-height;
+    transition: all .24s ease-in-out;
+    padding: 2rem  2rem 0;
+    position: relative;
+    min-height: calc(100vh - #{$topbar-height});
+    background: $white;
+    &.sidenav-open {
+        width: calc(100% - #{$sidebar-left-width});
+    }
+}
+
+
+[dir="rtl"] {
+    .notification-dropdown .dropdown-item .notification-details {
+        text-align: right;
+    }
+    .main-header .user {
+        margin-left: 2rem;
+        margin-right: 0;
+    }
+}

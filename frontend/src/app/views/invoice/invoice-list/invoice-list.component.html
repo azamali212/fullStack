@@ -1,0 +1,77 @@
+<div class="breadcrumb">
+    <h1>Invoice</h1>
+    <ul>
+        <li><a href="">Apps</a></li>
+        <li>Invoice</li>
+    </ul>
+</div>
+
+<div class="separator-breadcrumb border-top"></div>
+
+<div class="row mb-3">
+    <div class="col-md-12 mb-3">
+        <button class="btn btn-primary float-right" [routerLink]="['/invoice/new']">Create New Invoice</button>
+    </div>
+    <div class="col-md-12">
+        <div class="card o-hidden">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col" class="ps-3">#</th>
+                        <th scope="col">Bill from</th>
+                        <th scope="col">Bill to</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (invoice of invoices; track invoice.id; let i = $index) {
+                    <tr>
+                        <th scope="row" class="ps-3">{{ invoice.orderNumber }}</th>
+                        <td>
+                            {{invoice.billFrom.name}}
+                        </td>
+                        <td>{{ invoice.billTo.name }}</td>
+                        <td>
+                            <div class="badge" [ngClass]="{
+                                'text-bg-success': invoice.orderStatus === 'Delivered',
+                                'text-bg-warning': invoice.orderStatus === 'Processing',
+                                'text-bg-danger': invoice.orderStatus === 'Pending'
+                            }">
+                                {{invoice.orderStatus}}
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn btn-wide btn-outline-secondary me-3"
+                                [routerLink]="['/invoice/edit', invoice.id]">View</button>
+                            <button class="btn btn-outline-danger" (click)="deleteInvoice(invoice.id, deleteConfirmModal)">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+</div>
+
+<ng-template #deleteConfirmModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-title">Invoice deletion</h4>
+        <button type="button" class="btn-close" aria-label="Close button" aria-describedby="modal-title"
+            (click)="modal.dismiss('Cross click')">
+        </button>
+    </div>
+    <div class="modal-body">
+        <p><strong>Are you sure?</strong></p>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary btn-rounded"
+            (click)="modal.dismiss('cancel')">Cancel</button>
+        <button type="button" ngbAutofocus class="btn btn-wide btn-danger btn-rounded"
+            (click)="modal.close('Ok')">Ok</button>
+    </div>
+</ng-template>
