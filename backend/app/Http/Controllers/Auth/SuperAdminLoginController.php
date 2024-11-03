@@ -27,12 +27,14 @@ class SuperAdminLoginController extends Controller
             // Include the user's role in the response
             $role = $user->getRoleNames()->first(); // Assuming single role
             $permissions = $user->getAllPermissions()->pluck('name');
+            $name = $user->name;
 
             return response()->json([
                 'success' => true,
                 'token' => $token,
                 'role' => $role, // Return role
-                'permissions' => $permissions
+                'permissions' => $permissions,
+                'name' => $name
             ]);
         }
 
