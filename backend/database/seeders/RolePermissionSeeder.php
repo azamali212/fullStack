@@ -64,14 +64,6 @@ class RolePermissionSeeder extends Seeder
             'AmbulanceDriver.edit',
             'Ambulance.assignSystem',
 
-            //Doctor
-            'Doctors.index',
-            'Doctors.show',
-            'Doctors.edit',
-            'Doctors.create',
-            'Doctors.store',
-            'Doctors.destroy',
-
             //Shift
             'AmbulanceDriverShift.index',
             'AmbulanceDriverShift.show',
@@ -202,12 +194,6 @@ class RolePermissionSeeder extends Seeder
                 'Worker.update',
                 'Worker.destroy',
                 'Worker.edit',
-                'Doctors.index',
-                'Doctors.show',
-                'Doctors.edit',
-                'Doctors.create',
-                'Doctors.store',
-                'Doctors.destroy',
             ],
             'Hospital Administrator' => [
                 'hospitals.index',
@@ -260,17 +246,6 @@ class RolePermissionSeeder extends Seeder
                 'Worker.update',
                 'Worker.destroy',
                 'Worker.edit',
-                'Doctors.index',
-                'Doctors.show',
-                'Doctors.edit',
-                'Doctors.create',
-                'Doctors.store',
-                'Doctors.destroy',
-            ],
-
-            'Doctor' => [
-                'Doctors.show',
-                'Doctors.edit',
             ],
 
             'AmbulanceDriverProfile' => [
