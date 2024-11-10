@@ -72,6 +72,23 @@ class RolePermissionSeeder extends Seeder
             'Doctors.store',
             'Doctors.destroy',
 
+            //New Shift
+            'ShiftSchedule.index',
+            'ShiftSchedule.show',
+            'ShiftSchedule.create',
+            'ShiftSchedule.store',
+            'ShiftSchedule.edit',
+            'ShiftSchedule.destroy',
+            'ShiftSchedule.assignShift',
+            'Leaves.index',
+            'Leaves.create',
+            'Leaves.delete',
+            'Leaves.approve',
+            'Leaves.update',
+            'Leaves.show',
+            'Leaves.store',
+            'Leaves.edit',
+
             //Shift
             'AmbulanceDriverShift.index',
             'AmbulanceDriverShift.show',
@@ -234,6 +251,24 @@ class RolePermissionSeeder extends Seeder
                 'AmbulanceDriverShift.edit',
                 'AmbulanceDriverShift.shiftAssgin',
                 'AmbulanceDriverShift.ambulanceAssgin',
+
+                //Shifts
+                'ShiftSchedule.index',
+                'ShiftSchedule.show',
+                'ShiftSchedule.create',
+                'ShiftSchedule.store',
+                'ShiftSchedule.edit',
+                'ShiftSchedule.destroy',
+                'ShiftSchedule.assignShift',
+                'Leaves.index',
+                'Leaves.create',
+                'Leaves.delete',
+                'Leaves.approve',
+                'Leaves.update',
+                'Leaves.show',
+                'Leaves.store',
+                'Leaves.edit',
+
                 //Staff
                 'Nurses.index',
                 'Nurses.show',
@@ -271,27 +306,57 @@ class RolePermissionSeeder extends Seeder
             'Doctor' => [
                 'Doctors.show',
                 'Doctors.edit',
+                'Leaves.create',
+                'Leaves.delete',
+                'Leaves.update',
+                'Leaves.show',
+                'Leaves.store',
+                'Leaves.edit',
             ],
 
             'AmbulanceDriverProfile' => [
                 'AmbulanceDriverShift.request',
                 'AmbulanceDriverShift.show',
                 'AmbulanceDriver.show',
+                'Leaves.create',
+                'Leaves.delete',
+                'Leaves.update',
+                'Leaves.show',
+                'Leaves.store',
+                'Leaves.edit',
             ],
 
             'Nurses' => [
                 'Nurse.profile.show',
                 'Nurse.profile.update',
+                'Leaves.create',
+                'Leaves.delete',
+                'Leaves.update',
+                'Leaves.show',
+                'Leaves.store',
+                'Leaves.edit',
             ],
 
             'Guard' => [
                 'Guard.profile.show',
                 'Guard.profile.update',
+                'Leaves.create',
+                'Leaves.delete',
+                'Leaves.update',
+                'Leaves.show',
+                'Leaves.store',
+                'Leaves.edit',
             ],
 
             'Cleaner' => [
                 'Cleaner.profile.show',
                 'Cleaner.profile.update',
+                'Leaves.create',
+                'Leaves.delete',
+                'Leaves.update',
+                'Leaves.show',
+                'Leaves.store',
+                'Leaves.edit',
             ],
         ];
 

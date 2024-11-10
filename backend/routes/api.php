@@ -11,6 +11,7 @@ use App\Http\Controllers\Nurses\NursesController;
 use App\Http\Controllers\Nurses\NursesProfileController;
 use App\Http\Controllers\RolePermission\PermissionController;
 use App\Http\Controllers\RolePermission\RoleController;
+use App\Http\Controllers\Shift\ShiftScheduleController;
 use App\Http\Controllers\SuperAdmin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -91,7 +92,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/nurses/store', [NursesController::class, 'store'])->name('nurse.store')->middleware('permission:Nurses.store');
     Route::put('/nurses/{id}', [NursesController::class, 'update'])->name('nurse.update')->middleware('permission:Nurses.edit');
 
-    
+    Route::post('/assign-shift/{userId}', [ShiftScheduleController::class, 'assignShift'])->middleware('permission:ShiftSchedule.assignShift');
+
 });
 
 

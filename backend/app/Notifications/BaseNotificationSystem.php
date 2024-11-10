@@ -112,7 +112,8 @@ class BaseNotificationSystem extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject('New Shift Assignment')
-            ->greeting('Hello ' . $this->user->name)
+            ->line("Dear {$this->user->name},")
+            ->greeting("Hello {$this->user->name},")
             ->line('You have been assigned a new shift.')
             ->line('Shift Date: ' . $this->shift->shift_date)
             ->line('Shift Time: ' . $this->shift->start_time . ' - ' . $this->shift->end_time)

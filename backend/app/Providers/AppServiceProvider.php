@@ -12,6 +12,8 @@ use App\Repositories\HospitalRepo\HospitalRepository;
 use App\Repositories\HospitalRepo\HospitalRepositoryInterface;
 use App\Repositories\NursesRepo\NursesRepository;
 use App\Repositories\NursesRepo\NursesRepositoryInterface;
+use App\Repositories\NursesRepo\ShiftRepository;
+use App\Repositories\ShiftRepo\ShiftRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -28,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(AmbulanceDriverRepositoryInterface::class,  AmbulanceDriverRepository::class);
         $this->app->bind(AmbulanceDriverShiftRepositoryInterface::class,  AmbulanceDriverShiftRepository::class);
         $this->app->bind(NursesRepositoryInterface::class, NursesRepository::class);
+        $this->app->bind(ShiftRepositoryInterface::class,ShiftRepository::class);
     }
 
     /**

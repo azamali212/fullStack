@@ -22,8 +22,10 @@ class ShiftSchedule extends Model
         'shift_date',
         'start_time',
         'end_time',
+        'user_id',
         'shift_type',
         'notes',
+        'status'
     ];
 
     /**
@@ -38,4 +40,11 @@ class ShiftSchedule extends Model
     {
         return $this->belongsTo(AmbulanceService::class, 'ambulance_service_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
+
+
