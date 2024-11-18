@@ -2,14 +2,16 @@
 import Dashboard from '@/app/components/layout'
 import React,{useEffect} from 'react'
 
- function AmbulanceDashboard() {
+
+function Super() {
   useEffect(() => {
     console.log('Component mounted');
   }, []);
   return (
-    <Dashboard>
-    <div>AmbulanceDashboard</div>
+    <Dashboard userRole='System Administrator'>
+    <div>Super</div>
     </Dashboard>
   )
 }
-export default AmbulanceDashboard;
+
+export default Super

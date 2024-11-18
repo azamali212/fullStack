@@ -1,8 +1,11 @@
 'use client'
 import Dashboard from '@/app/components/layout'
-import React from 'react'
+import React,{useEffect} from 'react'
 
 function DoctorDashboard() {
+  useEffect(() => {
+    console.log('Component mounted');
+  }, []);
   return (
     <Dashboard>
     <div>DoctorDashboard</div>

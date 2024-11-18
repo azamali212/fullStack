@@ -1,7 +1,10 @@
-'use client';
-import React from 'react';
+'use client'
+import React,{useEffect} from 'react';
 
-function Navbar() {
+ function Navbar() {
+  useEffect(() => {
+    console.log('Component mounted');
+  }, []);
   return (
     <nav className="p-4 flex justify-between items-center">
       {/* Logo or Brand */}
@@ -17,5 +20,4 @@ function Navbar() {
     </nav>
   );
 }
-
 export default Navbar;

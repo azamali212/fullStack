@@ -1,56 +1,51 @@
-'use client';
-import { IconType } from "react-icons"; // Import the type for icons
-import { FaHome, FaCog, FaUser, FaSignOutAlt, FaHospital,FaUserMd,FaRegUser
-} from "react-icons/fa"; // Import example icons
-import { AiOutlineAppstore } from "react-icons/ai"; 
-import { TfiControlEject } from "react-icons/tfi"; // Additional icon from Ai library
-import { MdOutlineSettingsInputComponent } from "react-icons/md";
-import { FaUserGroup } from "react-icons/fa6";
+import { FaHome, FaCog, FaUser, FaSignOutAlt, FaHospital, FaUserMd, FaRegUser } from "react-icons/fa";
+import { IconType } from "react-icons";
 
-interface SidebarItem {
+export interface SidebarItem {
   label: string;
   href: string;
-  icon?: IconType; // Add icon property
+  icon?: IconType;
+  role?: string[]; // Role-based access control
   subItems?: SidebarItem[];
 }
 
-
+// Example sidebar items with roles
 export const sidebarItems: SidebarItem[] = [
-  { 
-    label: 'Dashboard', 
-    href: '#', 
-    icon: FaHome, // Use FaHome icon for Dashboard
-    subItems:[
-      { label: 'Hospital Panel', href: '#', icon: FaHospital }, // Use FaHospital for Hospital Panel
-      { label: 'Doctor Panel', href: '#', icon: FaUserMd }, // Use AiOutlineAppstore for Doctor Panel
-      { label: 'User Settings', href: '#' ,icon: FaRegUser},
-      { label: 'Role Settings', href: '#',icon: TfiControlEject},
-      { label: 'Permissions Settings', href: '#',icon: MdOutlineSettingsInputComponent },
-      { label: 'Staff Settings', href: '#',icon: FaUserGroup }
-    ]
-  },
-  { 
-    label: 'Settings', 
-    href: '#', 
-    icon: FaCog, // Use FaCog icon for Settings
+  {
+    label: 'Dashboard',
+    href: '#',
+    icon: FaHome,
+    role: ['System Administrator'],
     subItems: [
-      { label: 'Account Settings', href: '#' },
-      { label: 'Privacy Settings', href: '#' }
+      { label: 'Hospital Panel', href: '#', icon: FaHospital, role: ['Hospital Administrator', 'System Administrator'] },
+      { label: 'Doctor Panel', href: '#', icon: FaUserMd, role: ['System Administrator'] },
+      { label: 'User Settings', href: '#', icon: FaRegUser, role: ['System Administrator'] }
     ]
   },
-  { 
-    label: 'Profile', 
-    href: '#', 
-    icon: FaUser, // Use FaUser icon for Profile
+  {
+    label: 'Settings',
+    href: '#',
+    icon: FaCog,
+    role: ['System Administrator'],
     subItems: [
-      { label: 'Edit Profile', href: '#' },
-      { label: 'View Profile', href: '#' }
+      { label: 'Account Settings', href: '#', role: ['System Administrator'] },
+      { label: 'Privacy Settings', href: '#', role: ['System Administrator'] }
     ]
   },
-  { 
-    label: 'Logout', 
-    href: '#', 
-    icon: FaSignOutAlt // Use FaSignOutAlt icon for Logout
+  {
+    label: 'Profile',
+    href: '#',
+    icon: FaUser,
+    role: ['Hospital Administrator', 'System Administrator'],
+    subItems: [
+      { label: 'Edit Profile', href: '#', role: ['Hospital Administrator', 'System Administrator'] },
+      { label: 'View Profile', href: '#', role: ['Hospital Administrator', 'System Administrator'] }
+    ]
   },
-  { label: 'Another Item', href: '#', icon: AiOutlineAppstore } // Example of another icon
+  {
+    label: 'Logout',
+    href: '#',
+    icon: FaSignOutAlt,
+    role: ['Hospital Administrator', 'System Administrator']
+  }
 ];
