@@ -1,3 +1,4 @@
+'use client'
 import React, { useState, useEffect } from 'react';
 import Navbar from '../ui/navbar/navbar';
 import Sidebar from '../ui/sidebar/sidebar';
@@ -7,9 +8,12 @@ import './style.css';
 interface DashboardProps {
   children: React.ReactNode;
   userRole: string; // Accept userRole dynamically as a prop
+  className: string
+  userName:string
+  userImage:string
 }
 
-function Dashboard({ children, userRole }: DashboardProps) {
+function Dashboard({ children, userRole,className,userName,userImage }: DashboardProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const toggleSidebar = () => {
@@ -48,12 +52,12 @@ function Dashboard({ children, userRole }: DashboardProps) {
             isSidebarOpen ? 'open' : 'closed'
           } text-white transition-transform duration-300 transform lg:w-64 lg:absolute h-full z-10`}
         >
-          <Sidebar isSidebarOpen={isSidebarOpen} userRole={userRole} />
+          <Sidebar isSidebarOpen={isSidebarOpen} userRole={userRole} userName={userName} userImage={userImage} />
         </div>
 
         {/* Main Content */}
         <main
-          className={`flex-1 p-3 bg-white transition-all duration-300 ${
+          className={`flex-1 p-3  transition-all duration-300 ${className} ${
             isSidebarOpen ? 'lg:ml-64' : 'lg:ml-0' // When sidebar is open, move content to the right
           }`}
         >

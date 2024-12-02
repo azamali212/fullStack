@@ -23,6 +23,17 @@
 .sidebar.closed {
   transform: translateX(-100%);
 }
+ul {
+  transition: all 0.5s ease-in-out, border-color 0.5s ease-in-out;
+}
+
+li {
+  padding-left: 8px; /* Adjust padding for better alignment */
+}
+
+.border-indigo-400 {
+  border-color: #6366f1; /* Tailwind Indigo 400 */
+}
 
 @media (min-width: 1024px) {
   .sidebar.open {
@@ -36,6 +47,7 @@
   main {
     width: 100%;
     margin-left: 0;
+    background-color: #ECEFF3;
   }
 
   .lg\:ml-64 {
@@ -55,5 +67,5 @@
   }
   main {
     margin-right: 0;
-  }
+  } 
 }

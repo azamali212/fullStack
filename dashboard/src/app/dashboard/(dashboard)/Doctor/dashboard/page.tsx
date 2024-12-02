@@ -7,7 +7,7 @@ function DoctorDashboard() {
     console.log('Component mounted');
   }, []);
   return (
-    <Dashboard>
+    <Dashboard userRole='Doctor'>
     <div>DoctorDashboard</div>
     </Dashboard>
   )

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\RolePermission;
 
 use App\Http\Controllers\Controller;
+use App\Models\RolePermission\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
@@ -116,10 +117,18 @@ class RoleController extends Controller
             return response()->json(['error' => 'Role not found.'], 404);
         }
 
+        // Find permissions by name (instead of ID)
+        $permissions = Permission::whereIn('name', $request->input('permission'))->pluck('id');
+
+        // Check if the number of permissions found matches the requested permissions
+        if ($permissions->count() != count($request->input('permission'))) {
+            return response()->json(['error' => 'One or more permissions are invalid.'], 400);
+        }
+
         $role->name = $request->input('name');
         $role->save();
 
-        $role->syncPermissions($request->input('permission'));
+        $role->syncPermissions($permissions); // Sync only valid permissions
 
         $role->load('permissions');
 

@@ -37,6 +37,9 @@ Route::post('hospital-admin/login', [HospitalAdminAuthController::class, 'login'
 
 Route::middleware('auth:api')->group(function () {
 
+    Route::post('super-admin/logout', [SuperAdminLoginController::class, 'logout'])->name('super-admin.logout')->middleware('auth:sanctum');
+
+
     //Role Routes
     Route::get('role', [RoleController::class, 'index'])->middleware('permission:roles.index');
     Route::delete('roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');

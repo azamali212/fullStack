@@ -24,13 +24,19 @@ class Dcotor extends Authenticatable
         'hospital_id',
         'email',
         'password',
+        'user_id',
     ];
 
      // Many doctors belong to one hospital
     // Define the 'hospital' relationship
-    public function hospital(): BelongsTo
+    public function hospital()
     {
-        return $this->belongsTo(Hospital::class);
+        return $this->belongsTo(Hospital::class, 'hospital_id');  // This is the correct relationship
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');  // Assuming the foreign key is 'user_id' in the dcotors table
     }
 
     /**

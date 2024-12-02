@@ -19,17 +19,32 @@ const Login: React.FC = () => {
     const resultAction = await dispatch(loginUser({ email, password }));
     if (loginUser.fulfilled.match(resultAction)) {
       console.log("Login successful, redirecting...");
-      const userRole = resultAction.payload.role; // Assuming the payload contains user role
+      
+      let userRole = resultAction.payload.role;
+      console.log("Encoded role received:", userRole);
+  
+      // Decode role if it is URL-encoded
+      if (userRole) {
+        userRole = decodeURIComponent(userRole);
+      }
+      console.log("Decoded role:", userRole);
+  
       Cookies.set("loggedin", "true");
-      Cookies.set("userRole", userRole); // Store role in a cookie for use in middleware
-
+      Cookies.set("userRole", userRole); // Store decoded role in a cookie
+  
       // Redirect based on role
       if (userRole === "System Administrator") {
         router.push("/dashboard/superAdmin/dashboard");
       } else if (userRole === "Hospital Administrator") {
         router.push("/dashboard/hospital/dashboard");
-      } else {
-        console.error("Unknown role");
+      }
+      else if (userRole === "Doctor") {
+        router.push("/dashboard/Doctor/dashboard");
+      }  
+      else {
+        console.error("Unknown role:", userRole);
+        alert("You do not have access to this application.");
+        router.push("/login");
       }
     } else {
       console.log("Login failed", resultAction.error);

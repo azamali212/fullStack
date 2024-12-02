@@ -4,7 +4,7 @@
 
 
 :root {
-    --primary-color: #405189; /* Set your desired color here */
-    --nav-color: #ffffffff;
-    --navtext-color: rgb(20, 20, 20);
+    --primary-color: #222831; /* Set your desired color here */
+    --nav-color: #222831;
+    --navtext-color: #ffff;
   }

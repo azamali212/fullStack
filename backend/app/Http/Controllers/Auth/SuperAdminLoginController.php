@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Dcotor;
+use App\Models\Hospital;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -17,48 +19,74 @@ class SuperAdminLoginController extends Controller
             'password' => 'required',
         ]);
 
-        // Get the credentials from the request
-        $credentials = $request->only('email', 'password');
+        // Retrieve user by email
         $user = User::where('email', $request->email)->first();
 
-        // Check if the user exists and the password matches
+        // Verify user and password
         if ($user && Hash::check($request->password, $user->password)) {
-            // Create the token
+            // Generate token
             $token = $user->createToken('authToken')->plainTextToken;
 
-            // Include the user's role and permissions
-            $role = $user->getRoleNames()->first(); // Assuming the user has only one role
-            $permissions = $user->getAllPermissions()->pluck('name');
-            $name = $user->name;
+            // Load roles and permissions dynamically
+            $user->load('roles', 'permissions');
 
-            // Return the response with the token, role, and permissions
+            // Initialize variables
+            $hospital = null;
+            $dcotors = [];
+
+            if ($user->hasRole('Doctor')) {
+                // Check if the user is linked to a dcotor record
+                $dcotor = $user->dcotor;  // Access the associated dcotor
+
+                if ($dcotor) {
+                    $hospital = $dcotor->hospital;
+                    $dcotors = [$dcotor];
+                }
+            } elseif ($user->hasRole('Hospital Administrator')) {
+                $hospital = $user->hospital;
+                $dcotors = $hospital ? $hospital->dcotors : [];
+            } else {
+                // For other roles
+                $hospital = null;
+                $dcotors = [];
+            }
+
+            // Debugging
+            logger('Hospital:', [$hospital]);
+            logger('Doctors:', [$dcotors]);
+
             return response()->json([
                 'success' => true,
                 'token' => $token,
-                'role' => $role,
-                'permissions' => $permissions,
-                'name' => $name,
-            ])
-            ->cookie('XSRF-TOKEN', csrf_token(), 60, '/', null, false, true)  // Set CSRF token
-            ->cookie('token', $token, 60, '/', null, false, true); // Set auth token
+                'role' => $user->roles->pluck('name'),
+                'permissions' => $user->getAllPermissions()->pluck('name'),
+                'name' => $user->name,
+                'hospital' => $hospital,
+                'dcotors' => $dcotors,
+
+            ], 200)->cookie('XSRF-TOKEN', csrf_token(), 60, '/', null, false, true)
+                ->cookie('token', $token, 60, '/', null, false, true);
         }
 
-        // If login fails, return an error response
+        // Invalid login
         return response()->json([
             'success' => false,
-            'error' => 'Invalid credentials'
+            'error' => 'Invalid credentials',
         ], 401);
     }
 
     // Logout Super Admin
     public function logout(Request $request)
     {
-        // Delete the user's current access token
-        $request->user()->currentAccessToken()->delete();
+        // Ensure user is authenticated
+        if ($request->user()) {
+            $request->user()->currentAccessToken()->delete();
+            $cookie = cookie('XSRF-TOKEN', null, -1); // Expire CSRF token cookie
+            $cookie2 = cookie('token', null, -1); // Expire auth token cookie
 
-        // Return a successful logout message
-        return response()->json([
-            'message' => 'Logged out successfully'
-        ]);
+            return response()->json(['message' => 'Logged out successfully'])->withCookie($cookie)->withCookie($cookie2);
+        }
+
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 }

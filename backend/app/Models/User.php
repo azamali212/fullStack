@@ -14,7 +14,7 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes;
 
-   
+
 
     /**
      * The attributes that are mass assignable.
@@ -26,6 +26,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'hospital_id'
     ];
 
     /**
@@ -47,9 +48,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function hospitals()
+    public function hospital()
     {
-        return $this->hasMany(Hospital::class);
+        return $this->belongsTo(Hospital::class, 'hospital_id');  // This is the correct relationship
+    }
+
+    public function dcotor()
+    {
+        return $this->hasOne(Dcotor::class, 'user_id');  // Assuming the foreign key is 'user_id' in the dcotors table
     }
 
     public function role()

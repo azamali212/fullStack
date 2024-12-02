@@ -24,7 +24,7 @@ class Hospital extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-       'name',
+        'name',
         'email',
         'password',
         'role',
@@ -47,6 +47,7 @@ class Hospital extends Authenticatable
         'website_url',
         'contact_person_name',
         'contact_person_email',
+
         'contact_person_phone',
         'accreditations',
         'affiliated_universities',
@@ -55,7 +56,7 @@ class Hospital extends Authenticatable
         'visiting_hours',
         'profile_picture',
         'consultation_fee_range',
-        'verification_code', 
+        'verification_code',
         'is_verified',
         // Images
         'registration_certificate_image',
@@ -64,13 +65,13 @@ class Hospital extends Authenticatable
         'other_documents_image',
     ];
 
-     // One hospital has many doctors
-     public function dcotors(): HasMany
+    // One hospital has many doctors
+    public function dcotors(): HasMany
     {
         return $this->hasMany(Dcotor::class);
     }
 
-    //Profile 
+    //Profile
     public function profile()
     {
         return $this->hasOne(HospitalProfile::class);
@@ -81,32 +82,32 @@ class Hospital extends Authenticatable
         return $this->hasMany(AmbulanceService::class);
     }
 
-     // A hospital belongs to a super admin (user)
-     public function user()
-     {
-         return $this->belongsTo(User::class);
-     }
+    // A hospital belongs to a super admin (user)
+    public function user()
+    {
+        return $this->hasMany(User::class);
+    }
 
-     public function nurse()
-     {
-         return $this->hasMany(Nurse::class);
-     }
+    public function nurse()
+    {
+        return $this->hasMany(Nurse::class);
+    }
 
 
     // Relationships for permissions
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id')
-                    ->where('model_type', self::class);
+            ->where('model_type', self::class);
     }
 
     public function permissions()
     {
         return $this->belongsToMany(Permission::class, 'model_has_permissions', 'model_id', 'permission_id')
-                    ->where('model_type', self::class);
+            ->where('model_type', self::class);
     }
     /**
-     * 
+     *
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>
