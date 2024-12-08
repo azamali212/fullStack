@@ -193,8 +193,16 @@ class PermissionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Permission $permission)
     {
-        //
+        // Ensure the role cannot be deleted if it is a special role, like the default admin role
+        if ($permission->id <= 2) {
+            return response()->json(['error' => 'This role cannot be deleted.'], 403);
+        }
+
+        // Soft delete the role
+        $permission->delete();
+
+        return response()->json(['success' => 'Role deleted successfully.']);
     }
 }

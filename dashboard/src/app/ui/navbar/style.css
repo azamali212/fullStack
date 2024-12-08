@@ -1,33 +1,22 @@
-/* Search Bar Animation */
-.search-container {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-  }
-  
-  .search-container.expanded {
-    width: 400px; /* Expanded width of the search bar */
-  }
-  
-  .search-input-container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 400px;
-    padding: 20px;
-    background-color: white;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    text-align: center;
-  }
-  
-  .modal-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    width: 10rem;
-    
-    background: rgba(0, 0, 0, 0.5); /* Dark overlay */
-  }
+
+
+  /* For sticky breadcrumbs */
+.sticky {
+  position: sticky;
+  top: 4rem; /* Adjust depending on your navbar height */
+  z-index: 10;
+ 
+  padding: 0.5rem;
+}
+
+/* For making the breadcrumbs look better */
+.MuiBreadcrumbs-root {
+  font-size: 0.875rem;
+}
+
+.MuiBreadcrumbs-link {
+  color: #333;
+}
+.MuiBreadcrumbs-separator {
+  color: #ccc;
+}

@@ -29,12 +29,13 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::select('*');
-        if (Auth::user()->hasrole('System Administrator')) {
+        $users = User::with('hospital');  // Eager load the hospital relation
+        if (Auth::user()->hasRole('System Administrator')) {
             $users->withTrashed();
         } else {
             $users->where('id', '!=', '1');
         }
+
         $data = [
             'users' => $users->get()
         ];

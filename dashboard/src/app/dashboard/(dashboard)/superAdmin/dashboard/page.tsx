@@ -3,7 +3,7 @@
 import * as React from "react";
 import Dashboard from "@/app/components/layout";
 import { Paper, Divider } from "@mui/material";
-import Chart from "chart.js";
+import Chart from 'chart.js/auto';
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
 import MedicationLiquidOutlinedIcon from "@mui/icons-material/MedicationLiquidOutlined";

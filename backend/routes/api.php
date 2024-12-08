@@ -52,6 +52,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('permissions/store', [PermissionController::class, 'store'])->middleware('permission:permissions.create');
     Route::get('permissions/{permission}', [PermissionController::class, 'show'])->name('show')->middleware('permission:permissions.show');
     Route::put('permissions/{permission}', [PermissionController::class, 'update'])->middleware('permission:permissions.edit');
+    Route::delete('permissions/{permission}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
 
     //User Routes
     Route::get('user', [UserController::class, 'index'])->middleware('permission:users.index');

@@ -2,13 +2,15 @@ import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './slice/userSlice';
 import userRoleSlice from './slice/userRoleSlice';
 import userPermissionSlice from './slice/userPermissionSlice';
+import adminSlice from './slice/adminSlice';
 
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
     userRoles: userRoleSlice,
-    userPermission: userPermissionSlice
+    userPermission: userPermissionSlice,
+    admins: adminSlice
   },
   devTools: process.env.NODE_ENV !== "production",
 });
