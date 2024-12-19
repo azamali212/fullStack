@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useRef } from "react";
 import Dashboard from "@/app/components/layout";
 import { Paper, Divider } from "@mui/material";
 import Chart from 'chart.js/auto';
@@ -50,6 +51,7 @@ export default function Super() {
   const totalCount = 100;
   // Static Doughnut chart data
   const doughnutData = [65, 15, 20];
+  const chartInstancesRef = useRef<Record<string, Chart>>({});
 
   React.useEffect(() => {
     // Bar chart initialization logic
@@ -72,8 +74,13 @@ export default function Super() {
       type: string
     ) => {
       if (ctx) {
+        // Destroy existing chart instance if it exists
+        if (chartInstancesRef.current[chartId]) {
+          chartInstancesRef.current[chartId].destroy();
+        }
+    
         const config = {
-          type: type, // Bar or Doughnut type based on passed parameter
+          type: type,
           data:
             type === "bar"
               ? {
@@ -89,15 +96,15 @@ export default function Super() {
                   datasets: [
                     {
                       label: new Date().getFullYear(),
-                      backgroundColor: "#3182ce", // Blue bars
-                      borderColor: "#3182ce", // Border color
+                      backgroundColor: "#3182ce",
+                      borderColor: "#3182ce",
                       data: [65, 78, 66, 44, 56, 67, 75],
                       fill: false,
                     },
                     {
                       label: new Date().getFullYear() - 1,
-                      backgroundColor: "#f6ad55", // Orange bars
-                      borderColor: "#f6ad55", // Border color
+                      backgroundColor: "#f6ad55",
+                      borderColor: "#f6ad55",
                       data: [40, 68, 86, 74, 56, 60, 87],
                       fill: false,
                     },
@@ -107,7 +114,7 @@ export default function Super() {
                   labels: ["Red", "Blue", "Yellow"],
                   datasets: [
                     {
-                      data: doughnutData, // Static Doughnut chart data
+                      data: doughnutData,
                       backgroundColor: ["#3182ce", "#f6ad55", "#fbbf24"],
                     },
                   ],
@@ -115,47 +122,25 @@ export default function Super() {
           options: {
             maintainAspectRatio: false,
             responsive: true,
-            title: {
-              display: false,
-              text: "Sales Charts",
-              fontColor: "white",
-            },
+            title: { display: false },
             legend: {
-              labels: {
-                fontColor: "white",
-              },
+              labels: { fontColor: "white" },
               align: "end",
               position: "bottom",
-            },
-            tooltips: {
-              mode: "index",
-              intersect: false,
-            },
-            hover: {
-              mode: "nearest",
-              intersect: true,
             },
             scales:
               type === "bar"
                 ? {
                     x: {
-                      ticks: {
-                        fontColor: "rgba(255,255,255,.7)",
-                      },
+                      ticks: { fontColor: "rgba(255,255,255,.7)" },
                       grid: {
                         display: false,
-                        borderDash: [2],
-                        borderDashOffset: [2],
                         color: "rgba(33, 37, 41, 0.3)",
                       },
                     },
                     y: {
-                      ticks: {
-                        fontColor: "rgba(255,255,255,.7)",
-                      },
+                      ticks: { fontColor: "rgba(255,255,255,.7)" },
                       grid: {
-                        borderDash: [3],
-                        borderDashOffset: [3],
                         drawBorder: false,
                         color: "rgba(255, 255, 255, 0.15)",
                       },
@@ -164,8 +149,9 @@ export default function Super() {
                 : {},
           },
         };
-
-        new Chart(ctx, config);
+    
+        // Create and save chart instance
+        chartInstancesRef.current[chartId] = new Chart(ctx, config);
       }
     };
 

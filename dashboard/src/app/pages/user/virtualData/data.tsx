@@ -1,35 +1,61 @@
 import React, { useState } from "react";
-import { FixedSizeList as List } from "react-window";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/lib/store";
 import { deleteUser } from "@/lib/slice/adminSlice";
-import Link from "next/link";
-import { Bar } from "react-chartjs-2";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TablePagination,
+  Paper,
+  TextField,
+  Grid,
+  Typography,
+  IconButton,
+  Tooltip,
+  Menu,
+  MenuItem,
+  Snackbar,
+  Button,
+} from "@mui/material";
+import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
-  Tooltip,
+  Tooltip as ChartTooltip,
   Legend,
 } from "chart.js";
+import SearchIcon from "@mui/icons-material/Search";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import MuiAlert from "@mui/material/Alert";
+import AddUserModal from "./models/userModel"; // Assuming the modal is in this path
+import EditUserModal from "./models/editUserModel"; // Import the EditUserModal
+import { getUsers } from "@/lib/slice/adminSlice";
+import { AppDispatch } from "@/lib/store";
 
-// Register Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
-  Tooltip,
+  ChartTooltip,
   Legend
 );
-
 interface Admin {
   id: number;
   name: string;
   email: string;
-  role: string;
+  password: string;
+  roles: { name: string }[];
+  permission: { name: string }[];
   hospital?: {
     name: string;
   };
@@ -37,143 +63,317 @@ interface Admin {
 
 function UserData() {
   const [searchTerm, setSearchTerm] = useState("");
-  const dispatch = useDispatch();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [openAddModal, setOpenAddModal] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<Admin | null>(null); // Selected user for editing
 
-  // Get users from Redux store
-  const users = useSelector((state: RootState) => state.admins.users);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { users, status } = useSelector((state: RootState) => state.admins);
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+    setPage(0); // Reset pagination when search term changes
+  };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   // Filter users
-  const filteredUsers = users.filter((user) => {
-    return (
-      (user.name &&
-        user.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (user.email &&
-        user.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (user.role && user.role.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
-  });
+  const filteredUsers = Array.isArray(users)
+    ? users.filter((user) => {
+        return (
+          (user.name &&
+            user.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (user.email &&
+            user.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (user.role &&
+            user.role.name.toLowerCase().includes(searchTerm.toLowerCase()))
+        );
+      })
+    : [];
 
-  // Chart data
-  const totalUsers = users.length;
-  const usersWithHospital = users.filter((user) => user.hospital).length;
+  const roles = Array.isArray(users)
+    ? users.flatMap((user) =>
+        Array.isArray(user.roles) ? user.roles.map((role) => role.name) : []
+      )
+    : [];
+
+  const roleCounts = roles.reduce((acc: { [key: string]: number }, role) => {
+    acc[role] = (acc[role] || 0) + 1;
+    return acc;
+  }, {});
+
+  const doctorCount = roleCounts["Doctor"] || 0; // Specific role (Doctor)
 
   const chartData = {
-    labels: ["Total Users", "Users with Hospital"],
+    labels: Object.keys(roleCounts), // Role names
     datasets: [
       {
-        label: "User Count",
-        data: [totalUsers, usersWithHospital],
-        backgroundColor: ["#4CAF50", "#FF9800"],
-        borderRadius: 8,
-        barThickness: 20,
-        borderSkipped: false,
+        label: "Total Users by Role",
+        data: Object.values(roleCounts), // Count of each role
+        fill: false,
+        borderColor: "rgb(75, 192, 192)",
+        tension: 0.1,
+      },
+      {
+        label: "Doctor Role Count",
+        data: Object.keys(roleCounts).map((role) =>
+          role === "Doctor" ? roleCounts[role] : null
+        ),
+        fill: false,
+        borderColor: "rgb(255, 99, 132)",
+        borderDash: [5, 5],
+        tension: 0.1,
       },
     ],
   };
 
-  const rowHeight = 50;
-  const itemCount = filteredUsers.length;
-  const listHeight = rowHeight * itemCount > 500 ? 500 : rowHeight * itemCount;
+  const paginatedUsers = filteredUsers.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
-  const Row = ({
-    index,
-    style,
-  }: {
-    index: number;
-    style: React.CSSProperties;
-  }) => {
-    const user = filteredUsers[index];
-    if (!user) return null;
+  const handleDelete = (userId: number) => {
+    dispatch(deleteUser(userId))
+      .unwrap()
+      .then(() => {
+        setSnackbarMessage("User deleted successfully!");
+      })
+      .catch((error) => {
+        console.error("Failed to delete user:", error);
+        setSnackbarMessage("Failed to delete user.");
+      });
+    setOpenSnackbar(true);
+    setAnchorEl(null); // Close menu after action
+  };
 
-    const handleDelete = () => {
-      dispatch(deleteUser(user.id.toString()));
-    };
+  const handleEdit = (user: Admin) => {
+    setSelectedUser(user); // Set the user to be edited
+    setOpenEditModal(true); // Open the edit modal
+    setAnchorEl(null); // Close menu
+  };
 
-    return (
-      <div
-        style={style}
-        className="flex justify-between items-center p-4 mb-2 border border-gray-200 rounded-lg bg-white shadow-md hover:shadow-xl hover:bg-gray-100 transition-all duration-300"
-      >
-        <div className="w-1/6 text-center font-medium">{user.id}</div>
-        <div className="w-1/4 font-medium">{user.name}</div>
-        {/* Adjusted email column */}
-        <div className="w-1/4 whitespace-normal break-words text-sm">
-          {user.email}
-        </div>
-        <div className="w-1/6 text-center">{user.role}</div>
-        <div className="w-1/6">
-          {user.hospital ? user.hospital.name : "No Hospital"}
-        </div>
-        <div className="flex space-x-2">
-          <button className="px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-md focus:outline-none">
-            Edit
-          </button>
-          <button
-            className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-md focus:outline-none"
-            onClick={handleDelete}
-          >
-            Delete
-          </button>
-        </div>
-      </div>
-    );
+  const handleUserUpdated = () => {
+    setOpenEditModal(false); // Close the modal
+    setSelectedUser(null); // Clear the selected user
+    dispatch(getUsers());
+  };
+
+  const handleClosePermissions = () => {
+    setAnchorEl(null); // Close menu
+  };
+
+  // Function to handle when a user is added (close modal and refresh the table)
+  const handleUserAdded = () => {
+    // Close the modal
+    setOpenAddModal(false);
+    dispatch(getUsers());
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      {/* Header */}
-      <div className="mb-6">
-        <input
-          type="text"
-          placeholder="Search Users..."
-          className="w-full p-4 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+    <div style={{ padding: "24px", backgroundColor: "#f5f5f5" }}>
+      <Grid
+        container
+        spacing={2}
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{ mb: 3 }}
+      >
+        <Grid item xs={8}>
+          <Typography variant="h6" gutterBottom>
+            User Management
+          </Typography>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            variant="outlined"
+            fullWidth
+            placeholder="Search users..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            InputProps={{
+              startAdornment: <SearchIcon sx={{ mr: 1, color: "grey.500" }} />,
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} container justifyContent="flex-end">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setOpenAddModal(true)} // Open modal on button click
+          >
+            Add User
+          </Button>
+        </Grid>
+      </Grid>
+
+      <TableContainer component={Paper}>
+        <Table aria-label="Users Table">
+          <TableHead>
+            <TableRow>
+              <TableCell
+                sx={{
+                  backgroundColor: "#3f51b5",
+                  color: "#fff",
+                  fontWeight: "bold",
+                }}
+              >
+                ID
+              </TableCell>
+              <TableCell
+                sx={{
+                  backgroundColor: "#3f51b5",
+                  color: "#fff",
+                  fontWeight: "bold",
+                }}
+              >
+                Name
+              </TableCell>
+              <TableCell
+                sx={{
+                  backgroundColor: "#3f51b5",
+                  color: "#fff",
+                  fontWeight: "bold",
+                }}
+              >
+                Email
+              </TableCell>
+              <TableCell
+                sx={{
+                  backgroundColor: "#3f51b5",
+                  color: "#fff",
+                  fontWeight: "bold",
+                }}
+              >
+                Role
+              </TableCell>
+              <TableCell
+                sx={{
+                  backgroundColor: "#3f51b5",
+                  color: "#fff",
+                  fontWeight: "bold",
+                }}
+              >
+                Hospital
+              </TableCell>
+              <TableCell
+                sx={{
+                  backgroundColor: "#3f51b5",
+                  color: "#fff",
+                  fontWeight: "bold",
+                }}
+              >
+                Actions
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {paginatedUsers.map((user) => (
+              <TableRow key={user.id}>
+                <TableCell>{user.id}</TableCell>
+                <TableCell>{user.name}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>
+                  {/* Check if roles exist and map through them */}
+                  {user.roles && user.roles.length > 0
+                    ? user.roles.map((role, index) => (
+                        <span key={index}>
+                          {role.name}
+                          {index < user.roles.length - 1 && ", "}
+                        </span>
+                      ))
+                    : "No Role Assigned"}
+                </TableCell>
+                <TableCell>
+                  {user.hospital ? user.hospital.name : "No Hospital"}
+                </TableCell>
+                <TableCell>
+                  <Tooltip title="More Actions">
+                    <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
+                      <MoreVertIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleClosePermissions}
+                  >
+                    <MenuItem onClick={() => handleEdit(user)}>Edit</MenuItem>
+                    <MenuItem onClick={() => handleDelete(user.id)}>
+                      Delete
+                    </MenuItem>
+                  </Menu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <TablePagination
+        component="div"
+        count={filteredUsers.length}
+        page={page}
+        onPageChange={handleChangePage}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+      >
+        <MuiAlert
+          onClose={() => setOpenSnackbar(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </MuiAlert>
+      </Snackbar>
+
+      {/* Add User Modal */}
+      <AddUserModal
+        open={openAddModal}
+        handleClose={() => setOpenAddModal(false)}
+        onUserAdded={handleUserAdded}
+      />
+
+      {/* Edit User Modal */}
+      {selectedUser && (
+        <EditUserModal
+          open={openEditModal}
+          handleClose={() => setOpenEditModal(false)}
+          user={selectedUser}
+          onUserUpdated={handleUserUpdated}
         />
-      </div>
+      )}
 
-      {/* Content Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* User List */}
-        <div className="lg:col-span-2 bg-white shadow rounded-lg p-4">
-          <h2 className="text-xl font-semibold mb-4">User List</h2>
-          <Link href="#">
-            <List
-              height={listHeight}
-              itemCount={itemCount}
-              itemSize={rowHeight}
-              width="100%"
-            >
-              {Row}
-            </List>
-          </Link>
-        </div>
-
-        {/* Chart */}
-        <div className="bg-white shadow rounded-lg p-4">
-          <h2 className="text-xl font-semibold mb-4">Statistics</h2>
-          <div className="relative w-full h-80 animate-fadeIn">
-            <Bar
-              data={chartData}
-              options={{
-                responsive: true,
-                plugins: {
-                  title: {
-                    display: true,
-                    text: "User and Hospital Statistics",
-                    font: {
-                      size: 16,
-                    },
-                  },
-                  tooltip: {
-                    mode: "index",
-                    intersect: false,
-                  },
-                },
-              }}
-            />
-          </div>
-        </div>
+      {/* Chart Section */}
+      <div style={{ marginTop: "50px" }}>
+        <Typography variant="h6" gutterBottom>
+          User Distribution by Role
+        </Typography>
+        <Line data={chartData} />
       </div>
     </div>
   );

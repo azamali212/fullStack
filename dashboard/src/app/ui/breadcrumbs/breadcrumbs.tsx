@@ -1,30 +1,23 @@
-import React from 'react';
-import { Breadcrumbs, Link, Typography } from '@mui/material';
-import { usePathname } from 'next/navigation';
+import { Breadcrumbs, Link, Typography } from "@mui/material";
+import { usePathname } from "next/navigation";
 
-// Breadcrumbs component to generate breadcrumb navigation
 const BasicBreadcrumbs = () => {
-  const pathname = usePathname(); // Get the current pathname
+  const pathname = usePathname();
 
-  // Function to generate breadcrumbs based on URL
   const getBreadcrumbs = () => {
-    // Split the pathname into segments and filter out empty segments
-    const pathSegments = pathname.split('/').filter(Boolean);
-
+    const pathSegments = pathname.split("/").filter(Boolean);
+  
     return pathSegments.map((segment, index) => {
-      // Capitalize the first letter of each segment for readability
       const readableTitle = segment.charAt(0).toUpperCase() + segment.slice(1);
       const isLast = index === pathSegments.length - 1;
-
-      // Check if it's the last segment or not to render a link or text
+  
+      // Generate URLs dynamically for each breadcrumb
+      const href = `/${pathSegments.slice(0, index + 1).join("/")}/userSetting`;
+  
       return isLast ? (
         <Typography
           key={index}
-          sx={{
-            fontWeight: 600,
-            color: 'text.primary',
-          }}
-          className="text-sm sm:text-base text-gray-900"
+          sx={{ fontWeight: 600, color: "text.primary" }}
         >
           {readableTitle}
         </Typography>
@@ -33,7 +26,7 @@ const BasicBreadcrumbs = () => {
           key={index}
           underline="hover"
           color="inherit"
-          href={`/${pathSegments.slice(0, index + 1).join('/')}`}
+          href={href}
           className="text-sm sm:text-base text-gray-700 hover:text-blue-600"
         >
           {readableTitle}
@@ -50,8 +43,8 @@ const BasicBreadcrumbs = () => {
         separator="›"
         className="flex justify-center space-x-2"
         sx={{
-          '& .MuiBreadcrumbs-separator': {
-            color: 'gray',
+          "& .MuiBreadcrumbs-separator": {
+            color: "gray",
           },
         }}
       >
@@ -63,6 +56,7 @@ const BasicBreadcrumbs = () => {
         >
           Home
         </Link>
+
         {/* Dynamically generated breadcrumbs */}
         {getBreadcrumbs()}
       </Breadcrumbs>

@@ -29,9 +29,9 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::with('hospital');  // Eager load the hospital relation
+        $users = User::with(['hospital', 'roles:name']);  // Eager load the hospital relation
         if (Auth::user()->hasRole('System Administrator')) {
-            $users->withTrashed();
+
         } else {
             $users->where('id', '!=', '1');
         }
@@ -55,12 +55,13 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'role' => ['required', 'exists:roles,name'],  // Ensure role exists in the roles table
+            'role' => ['required'],  // Ensure role exists in the roles table
             'permissions' => ['required', 'array'],  // Permissions array is required
             'permissions.*' => ['exists:permissions,name'],  // Each permission must exist
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:6'],
+            'hospital_id' => ['nullable', 'exists:hospitals,id'],
         ]);
 
         // Find the role by name
@@ -72,6 +73,7 @@ class UserController extends Controller
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password')),
             'role_id' => $role->id,  // Save role_id in users table
+            'hospital_id' => $request->get('hospital_id'),
         ]);
 
         // Assign role using Spatie method
@@ -81,7 +83,8 @@ class UserController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $user
+            'data' => $user,
+            'hospital' => $user->hospital,
         ]);
     }
 
@@ -126,7 +129,7 @@ class UserController extends Controller
     {
         // Allow access to trashed users if the user is an admin
         if (Auth::user()->hasRole('System Administrator')) {
-            $user = User::withTrashed()->find($user->id);
+            $user = User::find($user->id);
         } else {
             $user = User::find($user->id);
         }
@@ -198,7 +201,28 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
-        //
+{
+    try {
+        // Find the user by ID
+        $user = User::findOrFail($id);
+
+        // Check if the user ID is less than or equal to 2 (prevent deletion of certain users)
+        if ($user->id <= 2) {
+            return response()->json(['error' => 'This User cannot be deleted.'], 403);
+        }
+
+        // Perform the deletion (this is a permanent delete)
+        $user->delete();
+
+        // Return success response
+        return response()->json(['success' => 'User deleted successfully.']);
+    } catch (\Exception $e) {
+        // Handle errors (user not found or other issues)
+        return response()->json([
+            'message' => 'Failed to delete user',
+            'error' => $e->getMessage(),
+            'status' => 'error',
+        ], 500);
     }
+}
 }

@@ -60,6 +60,7 @@ function Dashboard({
       {/* Breadcrumbs (Centered below the Navbar) */}
       <div className="bg-gray-100">
         <BasicBreadcrumbs />
+        
       </div>
 
       <div className="flex flex-1">

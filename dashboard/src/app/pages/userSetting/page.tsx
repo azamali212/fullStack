@@ -1,5 +1,4 @@
-'use client';
-
+'use client'
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -10,7 +9,6 @@ import Dashboard from '@/app/components/layout';
 function UserSetting() {
   const [loading, setLoading] = useState(true);
 
-  // Simulate a loading effect
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
@@ -18,12 +16,10 @@ function UserSetting() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Define the cards array with routes
   const cards = [
     { src: "/images/management.png", title: "Role", route: "/pages/userRole" },
     { src: "/images/user.png", title: "Permission", route: "/pages/userPermissions" },
     { src: "/images/image1.png", title: "User", route: "/pages/user" },
-    // Add more cards here as needed
   ];
 
   return (

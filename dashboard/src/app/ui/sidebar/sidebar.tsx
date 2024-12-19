@@ -60,7 +60,7 @@ function Sidebar({
 
   return (
     <aside
-      className={`p-4 text-white h-full min-h-screen transition-all duration-300 ${
+      className={`p-4 text-white h-full rounded-full min-h-screen transition-all duration-300 ${
         isSidebarOpen ? "w-64" : "w-20"
       }`}
     >
