@@ -1,14 +1,13 @@
 "use client";
 
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FaChevronDown } from "react-icons/fa";
 import { sidebarItems } from "./sidebarItems";
-import Link from 'next/link'
+import Link from "next/link";
 import { logoutUser } from "../../../lib/slice/userSlice";
 import { useDispatch } from "react-redux";
-
 
 interface SidebarProps {
   isSidebarOpen: boolean;
@@ -20,7 +19,7 @@ interface SidebarProps {
 function Sidebar({
   isSidebarOpen,
   userRole,
-  name:propName,
+  name: propName,
   userImage,
 }: SidebarProps) {
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
@@ -29,12 +28,9 @@ function Sidebar({
 
   const [userName, setUserName] = useState<string | null>(null);
 
- 
-
   useEffect(() => {
     const storedName = localStorage.getItem("name");
 
-   
     if (!propName) {
       setUserName(storedName);
     }

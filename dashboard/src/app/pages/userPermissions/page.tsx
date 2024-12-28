@@ -318,7 +318,7 @@ const PermissionsTable = () => {
 };
 
 const tableHeaderStyle = {
-  backgroundColor: "#3f51b5",
+  backgroundColor: "#2227436c",
   color: "#fff",
   fontWeight: "bold",
 };

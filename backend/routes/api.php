@@ -7,6 +7,8 @@ use App\Http\Controllers\Auth\HospitalAdminAuth\HospitalAdminAuthController;
 use App\Http\Controllers\Auth\SuperAdminLoginController;
 use App\Http\Controllers\Hospital\HospitalController;
 use App\Http\Controllers\Hospital\HospitalProfileController;
+use App\Http\Controllers\ManagePayment\HospitalRegistrationPaymentController;
+use App\Http\Controllers\OrgnaizationWebsite\HospitalRegistrationUserController;
 use App\Http\Controllers\Nurses\NursesController;
 use App\Http\Controllers\Nurses\NursesProfileController;
 use App\Http\Controllers\RolePermission\PermissionController;
@@ -25,6 +27,20 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+//Publicly accessible routes for Organization Website
+Route::post('organization/hospitalRegistrationUser/login', [HospitalRegistrationUserController::class, 'login'])->name('HospitalRegistrationUser.login');
+
+Route::prefix('hospital-registration')->group(function () {
+    Route::get('organization/HospitalRegistrationUser/getAll', [HospitalRegistrationUserController::class, 'getAll'])->name('HospitalRegistrationUser.getAll');
+    Route::post('organization/HospitalRegistrationUser/register', [HospitalRegistrationUserController::class, 'register'])->name('HospitalRegistrationUser.register');
+    Route::post('organization/verify-email', [HospitalRegistrationUserController::class, 'verifyEmail']);
+    Route::post('organization/logout', [HospitalRegistrationUserController::class, 'logout'])->middleware('auth:sanctum');
+    Route::post('/create-payment-intent', [HospitalRegistrationPaymentController::class, 'createPaymentIntent']);
+    Route::post('/confirm-payment', [HospitalRegistrationPaymentController::class, 'confirmPayment']);
+});
+
+
 
 // Super Admin Authentication Routes
 Route::post('super-admin/login', [SuperAdminLoginController::class, 'login'])->name('super-admin.login');
@@ -92,14 +108,11 @@ Route::middleware('auth:api')->group(function () {
     Route::post('assign-shift-ambulance/{driverId}/{ambulanceId}', [DriverShiftController::class, 'assignShiftAndAmbulance'])->name('driver-shifts.assign')->middleware('permission:AmbulanceDriverShift.shiftAssgin');
 
     //Nurses Routes
-    Route::get('/nursesProfile/{id}',[NursesProfileController::class,'show'])->name('nursesProfile.show')->middleware('permission:Nurse.profile.show');
+    Route::get('/nursesProfile/{id}', [NursesProfileController::class, 'show'])->name('nursesProfile.show')->middleware('permission:Nurse.profile.show');
     Route::put('/nursesProfile/{id}', [NursesProfileController::class, 'update'])->name('nursesProfile.update')->middleware('permission:Nurse.profile.update');
     Route::get('/nurses', [NursesController::class, 'index'])->name('nurse.index')->middleware('permission:Nurses.index');
     Route::post('/nurses/store', [NursesController::class, 'store'])->name('nurse.store')->middleware('permission:Nurses.store');
     Route::put('/nurses/{id}', [NursesController::class, 'update'])->name('nurse.update')->middleware('permission:Nurses.edit');
 
     Route::post('/assign-shift/{userId}', [ShiftScheduleController::class, 'assignShift'])->middleware('permission:ShiftSchedule.assignShift');
-
 });
-
-

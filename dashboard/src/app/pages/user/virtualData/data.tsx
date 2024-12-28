@@ -39,6 +39,7 @@ import AddUserModal from "./models/userModel"; // Assuming the modal is in this 
 import EditUserModal from "./models/editUserModel"; // Import the EditUserModal
 import { getUsers } from "@/lib/slice/adminSlice";
 import { AppDispatch } from "@/lib/store";
+import ShowUserModel from "./models/showSingleUser";
 
 ChartJS.register(
   CategoryScale,
@@ -71,6 +72,8 @@ function UserData() {
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<Admin | null>(null); // Selected user for editing
+  const [openViewModal, setOpenViewModal] = useState(false);
+  const [viewedUser, setViewedUser] = useState<Admin | null>(null);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -79,6 +82,11 @@ function UserData() {
   if (status === "loading") {
     return <div>Loading...</div>;
   }
+
+  const handleViewUser = (user: Admin) => {
+    setViewedUser(user); // Set the user to be viewed
+    setOpenViewModal(true); // Open the modal
+  };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -231,7 +239,7 @@ function UserData() {
             <TableRow>
               <TableCell
                 sx={{
-                  backgroundColor: "#3f51b5",
+                  backgroundColor: "#2227436c",
                   color: "#fff",
                   fontWeight: "bold",
                 }}
@@ -240,7 +248,7 @@ function UserData() {
               </TableCell>
               <TableCell
                 sx={{
-                  backgroundColor: "#3f51b5",
+                  backgroundColor: "#2227436c",
                   color: "#fff",
                   fontWeight: "bold",
                 }}
@@ -249,7 +257,7 @@ function UserData() {
               </TableCell>
               <TableCell
                 sx={{
-                  backgroundColor: "#3f51b5",
+                  backgroundColor: "#2227436c",
                   color: "#fff",
                   fontWeight: "bold",
                 }}
@@ -258,7 +266,7 @@ function UserData() {
               </TableCell>
               <TableCell
                 sx={{
-                  backgroundColor: "#3f51b5",
+                  backgroundColor: "#2227436c",
                   color: "#fff",
                   fontWeight: "bold",
                 }}
@@ -267,7 +275,7 @@ function UserData() {
               </TableCell>
               <TableCell
                 sx={{
-                  backgroundColor: "#3f51b5",
+                  backgroundColor: "#2227436c",
                   color: "#fff",
                   fontWeight: "bold",
                 }}
@@ -276,7 +284,7 @@ function UserData() {
               </TableCell>
               <TableCell
                 sx={{
-                  backgroundColor: "#3f51b5",
+                  backgroundColor: "#2227436c",
                   color: "#fff",
                   fontWeight: "bold",
                 }}
@@ -320,6 +328,9 @@ function UserData() {
                     <MenuItem onClick={() => handleDelete(user.id)}>
                       Delete
                     </MenuItem>
+                    <MenuItem onClick={() => handleViewUser(user)}>
+                      View Details
+                    </MenuItem>
                   </Menu>
                 </TableCell>
               </TableRow>
@@ -356,6 +367,18 @@ function UserData() {
         open={openAddModal}
         handleClose={() => setOpenAddModal(false)}
         onUserAdded={handleUserAdded}
+      />
+
+      {/* Show User Modal */}
+      <ShowUserModel
+        open={openViewModal}
+        user={viewedUser}
+        handleClose={() => setOpenViewModal(false)}
+        handleEditClick={() => {
+          setOpenViewModal(false); // Close the view modal
+          setSelectedUser(viewedUser); // Set the selected user for editing
+          setOpenEditModal(true); // Open the edit modal
+        }}
       />
 
       {/* Edit User Modal */}

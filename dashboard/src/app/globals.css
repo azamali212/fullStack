@@ -2,9 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
-    --primary-color: #222831; /* Set your desired color here */
-    --nav-color: #222831;
-    --navtext-color: #ffff;
+  --primary-color: #222831; /* Set your desired color here */
+  --nav-color: #222831;
+  --navtext-color: #ffff;
+
+  --website-primary-color: #e7e5e4; /* Stone-200 from Tailwind for the website */
+  --website-nav-color: #e7e5e4; /* Darker shade for the website's navigation bar */
+  --website-navtext-color: black;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
   }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Apply the animation to a custom class */
+.animate-marquee {
+  display: flex;
+  animation: marquee 30s linear infinite;
+}

@@ -4,6 +4,7 @@ import userRoleSlice from './slice/userRoleSlice';
 import userPermissionSlice from './slice/userPermissionSlice';
 import adminSlice from './slice/adminSlice';
 import { hospitalReducer } from './slice/hospital/hospitalSlice';
+import hospitalRegistrationSlice from './slice/organizationWebsite/hospitalRegistrationUser/hospitalRegistration';
 
 
 export const store = configureStore({
@@ -12,7 +13,8 @@ export const store = configureStore({
     userRoles: userRoleSlice,
     userPermission: userPermissionSlice,
     admins: adminSlice,
-    hospitals:hospitalReducer
+    hospitals:hospitalReducer,
+    hospitalRegistration:hospitalRegistrationSlice
   },
   devTools: process.env.NODE_ENV !== "production",
 });
