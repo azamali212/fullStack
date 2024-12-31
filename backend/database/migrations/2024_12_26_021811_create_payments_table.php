@@ -21,6 +21,9 @@ return new class extends Migration
             $table->decimal('amount', 10, 2); // Payment amount
             $table->enum('status', ['pending', 'completed', 'failed'])->default('pending'); // Payment status
             $table->string('payment_gateway')->nullable(); // For storing the payment gateway used (Stripe, PayPal, etc.)
+            $table->decimal('base_price', 10, 2)->nullable();
+            $table->integer('discount')->nullable();
+            $table->decimal('final_price', 10, 2)->nullable();
             $table->timestamps();
         });
     }

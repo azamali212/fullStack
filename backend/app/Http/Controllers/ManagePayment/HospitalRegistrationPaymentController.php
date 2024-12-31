@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ManagePayment;
 
 use App\Models\Payment;
 use App\Models\HospitalRegistrationUser;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
@@ -21,42 +22,51 @@ class HospitalRegistrationPaymentController extends Controller
     // Endpoint to create a payment intent
     public function createPaymentIntent(Request $request)
     {
-        // Validate the incoming request
         $request->validate([
             'amount' => 'required|numeric|min:1',
             'hospital_registration_user_id' => 'required|exists:hospital_registration_users,id',
+            'customer_details' => 'required|array',
         ]);
 
         $hospitalUser = HospitalRegistrationUser::findOrFail($request->hospital_registration_user_id);
 
         try {
-            // Create a new payment intent
+            // Call Flask API for pricing
+            $client = new Client();
+            $response = $client->post('http://localhost:5001/generate_pricing');
+            $pricingData = json_decode($response->getBody(), true);
+
+            // Use final_price from Flask API
+            $amount = $pricingData['final_price'] * 100; // Convert to cents for Stripe
+
+            // Create Stripe PaymentIntent
             $paymentIntent = PaymentIntent::create([
-                'amount' => $request->amount * 100,  // Stripe expects amount in cents
+                'amount' => $amount,
                 'currency' => 'usd',
+                'description' => 'Hospital Registration Fee for user ID: ' . $hospitalUser->id,
                 'metadata' => [
                     'hospital_registration_user_id' => $hospitalUser->id,
                 ],
             ]);
 
-            // Save the payment info in the database
+            // Save the payment in the database
             $payment = Payment::create([
                 'hospital_registration_user_id' => $hospitalUser->id,
                 'transaction_id' => $paymentIntent->id,
-                'payment_method' => 'card', // You can update based on payment method
-                'amount' => $request->amount,
+                'payment_method' => 'card',
+                'amount' => $amount / 100, // Convert back to dollars
                 'status' => 'pending',
             ]);
 
             return response()->json([
                 'client_secret' => $paymentIntent->client_secret,
                 'payment_id' => $payment->id,
+                'pricing_details' => $pricingData, // Include Flask pricing details
             ]);
         } catch (ApiErrorException $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
     // Endpoint to confirm payment (you can call this after the client confirms the payment)
     public function confirmPayment(Request $request)
     {
